@@ -13,15 +13,20 @@ class CustomContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30.r),
-          bottomRight: Radius.circular(30.r)),
-      child: Container(
-        width: width,
-        height: ScreenUtil().screenHeight,
-        color: kOffWhite,
-        child: SingleChildScrollView(child: containerContent),
+    return SizedBox(
+      height: containerHieght ?? MediaQuery.of(context).size.height * 0.75,
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(30.r),
+            bottomRight: Radius.circular(30.r)),
+        child: Container(
+          width: width,
+          height: ScreenUtil().screenHeight,
+          color: kOffWhite,
+          child: SingleChildScrollView(
+            child: containerContent,
+          ),
+        ),
       ),
     );
   }

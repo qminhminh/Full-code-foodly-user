@@ -46,10 +46,15 @@ class RestaurantWidget extends StatelessWidget {
                       child: SizedBox(
                         height: 112.h,
                         width: width * 0.8,
-                        child: Image.network(
-                          image,
-                          fit: BoxFit.fitWidth,
-                        ),
+                        child: Image.network(image, fit: BoxFit.fitWidth,
+                            errorBuilder: (context, error, stackTrace) {
+                          return const Center(
+                            child: Icon(
+                              Icons.error,
+                              color: kPrimary,
+                            ),
+                          );
+                        }),
                       ),
                     ),
                     Positioned(
@@ -64,12 +69,16 @@ class RestaurantWidget extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(50.r)),
-                              child: Image.network(
-                                logo,
-                                fit: BoxFit.cover,
-                                height: 20.h,
-                                width: 20.w,
-                              ),
+                              child: Image.network(logo,
+                                  fit: BoxFit.cover, height: 20.h, width: 20.w,
+                                  errorBuilder: (context, error, stackTrace) {
+                                return const Center(
+                                  child: Icon(
+                                    Icons.error,
+                                    color: kPrimary,
+                                  ),
+                                );
+                              }),
                             ),
                           ),
                         ),

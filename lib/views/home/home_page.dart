@@ -23,59 +23,63 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: kOffWhite,
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(130.h), child: const CustomAppBar()),
+        preferredSize: Size.fromHeight(130.h),
+        child: const CustomAppBar(),
+      ),
       body: SafeArea(
-          child: CustomContainer(
-              containerContent: Column(
-        children: [
-          const CategoriesWidget(),
-          Obx(
-            () => categoryController.categoryValue == ''
-                ? Column(
-                    children: [
-                      // HomeHeading(
-                      //   heading: "Pick Restaurants",
-                      //   restaurant: true,
-                      // ),
-                      // const RestaurantOptions(),
-                      HomeHeading(
-                        heading: "Nearby Restaurants",
-                        onTap: () {
-                          Get.to(() => const AllNearbyRestaurants());
-                        },
-                      ),
-                      const NearbyRestaurants(),
-                      HomeHeading(
-                        heading: "Try Something New",
-                        onTap: () {
-                          Get.to(() => const Recommendations());
-                        },
-                      ),
-                      const FoodList(),
-                      HomeHeading(
-                        heading: "Fastest food closer to you",
-                        onTap: () {
-                          Get.to(() => const FastestFoods());
-                        },
-                      ),
-                      const FoodList(),
-                    ],
-                  )
-                : CustomContainer(
-                    containerContent: Column(
-                      children: [
-                        HomeHeading(
-                          heading:
-                              "Explore ${categoryController.titleValue} Category",
-                          restaurant: true,
+        child: CustomContainer(
+          containerContent: Column(
+            children: [
+              const CategoriesWidget(),
+              Obx(
+                () => categoryController.categoryValue == ''
+                    ? Column(
+                        children: [
+                          // HomeHeading(
+                          //   heading: "Pick Restaurants",
+                          //   restaurant: true,
+                          // ),
+                          // const RestaurantOptions(),
+                          HomeHeading(
+                            heading: "Nearby Restaurants",
+                            onTap: () {
+                              Get.to(() => const AllNearbyRestaurants());
+                            },
+                          ),
+                          const NearbyRestaurants(),
+                          HomeHeading(
+                            heading: "Try Something New",
+                            onTap: () {
+                              Get.to(() => const Recommendations());
+                            },
+                          ),
+                          const FoodList(),
+                          HomeHeading(
+                            heading: "Fastest food closer to you",
+                            onTap: () {
+                              Get.to(() => const FastestFoods());
+                            },
+                          ),
+                          const FoodList(),
+                        ],
+                      )
+                    : CustomContainer(
+                        containerContent: Column(
+                          children: [
+                            HomeHeading(
+                              heading:
+                                  "Explore ${categoryController.titleValue} Category",
+                              restaurant: true,
+                            ),
+                            const CategoryFoodList(),
+                          ],
                         ),
-                        const CategoryFoodList(),
-                      ],
-                    ),
-                  ),
+                      ),
+              ),
+            ],
           ),
-        ],
-      ))),
+        ),
+      ),
     );
   }
 }

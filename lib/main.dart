@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:feedback/feedback.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -30,7 +32,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: Environment.fileName);
   await Firebase.initializeApp(
-    name: 'foodly-full-code-flutter',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await GetStorage.init();

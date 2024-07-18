@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields, avoid_print, camel_case_types, unused_element
+
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

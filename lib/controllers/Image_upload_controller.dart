@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_final_fields, depend_on_referenced_packages
+// ignore_for_file: prefer_final_fields, depend_on_referenced_packages, file_names
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';

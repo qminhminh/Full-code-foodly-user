@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:foodly_user/common/app_style.dart';
@@ -5,13 +7,14 @@ import 'package:foodly_user/common/reusable_text.dart';
 import 'package:foodly_user/constants/constants.dart';
 
 class FoodWidget extends StatelessWidget {
-  FoodWidget(
-      {super.key,
-      required this.image,
-      required this.title,
-      required this.time,
-      this.onTap,
-      required this.price});
+  FoodWidget({
+    super.key,
+    required this.image,
+    required this.title,
+    required this.time,
+    this.onTap,
+    required this.price,
+  });
 
   final String image;
   final String title;
@@ -42,10 +45,15 @@ class FoodWidget extends StatelessWidget {
                   child: SizedBox(
                     height: 114.h,
                     width: width * 0.8,
-                    child: Image.network(
-                      image,
-                      fit: BoxFit.fitWidth,
-                    ),
+                    child: Image.network(image, fit: BoxFit.fitWidth,
+                        errorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                        child: Icon(
+                          Icons.error,
+                          color: kPrimary,
+                        ),
+                      );
+                    }),
                   ),
                 ),
               ),

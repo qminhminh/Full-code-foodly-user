@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, avoid_print
 
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:foodly_user/models/environment.dart';

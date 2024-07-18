@@ -33,18 +33,19 @@ class FoodList extends HookWidget {
                     itemBuilder: (context, index) {
                       Food food = foods[index];
                       return FoodWidget(
-                          onTap: () {
-                            Get.to(
-                                () => FoodPage(
-                                      food: food,
-                                    ),
-                                transition: Transition.fade,
-                                duration: const Duration(seconds: 1));
-                          },
-                          image: food.imageUrl[0],
-                          title: food.title,
-                          price: food.price.toStringAsFixed(2),
-                          time: food.time);
+                        onTap: () {
+                          Get.to(
+                              () => FoodPage(
+                                    food: food,
+                                  ),
+                              transition: Transition.fade,
+                              duration: const Duration(seconds: 1));
+                        },
+                        image: food.imageUrl[0],
+                        title: food.title,
+                        price: food.price.toStringAsFixed(2),
+                        time: food.time,
+                      );
                     }),
               );
   }
