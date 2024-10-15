@@ -1,0 +1,65 @@
+- "Thuộc tính của Scaffold:"
+ + appBar:Định nghĩa thanh ứng dụng (AppBar) ở phía trên của Scaffold.
+ + body:Định nghĩa nội dung chính của Scaffold.
+ + floatingActionButton:Định nghĩa nút hành động nổi (FloatingActionButton)
+ + floatingActionButtonLocation:Định nghĩa vị trí của floatingActionButton
+ + floatingActionButtonAnimator:Định nghĩa hoạt ảnh của floatingActionButton
+ + persistentFooterButtons:Định nghĩa các nút cố định ở phía dưới của Scaffold.
+ + drawer:Định nghĩa ngăn kéo điều hướng ở bên trái.
+ + endDrawer:Định nghĩa ngăn kéo điều hướng ở bên phải.
+ + bottomNavigationBar:Định nghĩa thanh điều hướng dưới cùng
+ + bottomSheet:Định nghĩa một bottom sheet cố định
+ + backgroundColor:Định nghĩa màu nền của Scaffold
+ + resizeToAvoidBottomInset:Kiểm soát xem Scaffold có tự động điều chỉnh kích thước để tránh các phần tử bị che khuất bởi bàn phím ảo hay không
+ + primary:Chỉ định liệu Scaffold có nên dành không gian cho một AppBar trên cùng hay không.
+ + drawerDragStartBehavior:Định nghĩa hành vi kéo bắt đầu của ngăn kéo
+ + extendBody:Quy định xem thân chính của Scaffold có nên mở rộng phía sau thanh điều hướng dưới cùng hay không.
+ + extendBodyBehindAppBar:Quy định xem thân chính của Scaffold có nên mở rộng phía sau AppBar hay không.
+ + drawerScrimColor:Định nghĩa màu của lớp mờ phía sau ngăn kéo
+ + drawerEdgeDragWidth:Quy định bề rộng của vùng kéo để mở ngăn kéo
+ + drawerEnableOpenDragGesture: Quy định xem ngăn kéo có thể mở bằng thao tác kéo hay không.
+ + endDrawerEnableOpenDragGesture:Quy định xem ngăn kéo bên phải có thể mở bằng thao tác kéo hay không
+
+----------------------------------------------------------------
+
+- "InputDecoration": thuộc tính isDense của InputDecoration được sử dụng để kiểm soát mật độ của TextField:
+ + isDense: true : giảm trông nhỏe hơn và gọn gàng hơn.
+
+----------------------------------------------------------------
+
+- "Flexible": được sử dụng trong Row, Column.
+  + fit: FlexFit.tight : làm phần con lấp đầy không gian có sẵn
+  + fit: FlexFit.loose: làm phần con có kích thước tối đa.
+
+----------------------------------------------------------------
+
+- "TextField": 
+ + errorBorder: Thuộc tính này xác định đường viền của TextField khi có lỗi.
+ + focusedBorder: Thuộc tính này xác định đường viền của TextField khi nó đang được người dùng tương tác (focusing).
+ + focusedErrorBorder: Thuộc tính này xác định đường viền của TextField khi nó vừa có lỗi vừa đang được người dùng tương tác.
+ + disabledBorder: Thuộc tính này xác định đường viền của TextField khi nó bị vô hiệu hóa (disabled).
+ + enabledBorder: Thuộc tính này xác định đường viền của TextField khi nó được kích hoạt (enabled) nhưng không đang được người dùng tương tác.
+ + border: Thuộc tính này xác định đường viền mặc định của TextField.
+ + OutlineInputBorder: một lớp giúp tạo ra các đường viền có dạng outline (khung bao quanh) cho TextField
+
+- onEditingComplete: hi người dùng hoàn tất việc nhập tên người dùng và nhấn "Done" trên bàn phím, tiêu điểm sẽ tự động chuyển sang trường mật khẩu, giúp trải nghiệm người dùng mượt mà hơn.
+
+----------------------------------------------------------------
+
+- 'SafeArea' : một widget trong Flutter được sử dụng để đảm bảo rằng các widget con của nó không bị che khuất bởi các phần tử giao diện hệ thống như notch (tai thỏ), thanh trạng thái, hoặc các thanh điều hướng.
++left: Nếu đặt là false, không thêm padding cho cạnh trái.
++right: Nếu đặt là false, không thêm padding cho cạnh phải.
++top: Nếu đặt là false, không thêm padding cho cạnh trên.
++bottom: Nếu đặt là false, không thêm padding cho cạnh dưới.
++minimum: Padding tối thiểu sẽ được áp dụng cho các cạnh.
++maintainBottomViewPadding: Nếu đặt là true, đảm bảo rằng padding dưới cùng được duy trì để không che khuất nội dung bởi bàn phím
+
+----------------------------------------------------------------
+
+SizedBox.shrink() trong Flutter tạo ra một widget với kích thước bằng 0. Đây là một cách hiệu quả để tạo ra một widget trống mà không chiếm bất kỳ không gian nào trong giao diện
+
+----------------------------------------------------------------
+Curves.easeOut là một thuộc tính được sử dụng để xác định đường cong của các hoạt ảnh
+
+----------------------------------------------------------------
+

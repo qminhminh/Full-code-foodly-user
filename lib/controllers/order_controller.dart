@@ -117,7 +117,7 @@ class OrderController extends GetxController {
   void paymentFunction(String payment) async {
     setLoading = true;
     var url =
-        Uri.parse('${Environment.paymentUrl}/stripe/create-checkout-session');
+        Uri.parse('http://192.168.137.1:3003/stripe/create-checkout-session');
 
     try {
       var response = await http.post(
