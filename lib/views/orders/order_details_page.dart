@@ -139,7 +139,7 @@ class OrderDetailsPage extends StatelessWidget {
                         height: 20.h,
                       ),
                       OrderPageTile(
-                        food: controller.order!.orderItems![0],
+                        food: controller.order!.orderItems[0],
                         status: controller.order!.orderStatus,
                       ),
                       SizedBox(
