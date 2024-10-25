@@ -82,47 +82,74 @@ class CartController extends GetxController {
     }
   }
 
-  void removeFormCart(String productId) async {
-    String token = box.read('token');
-    String accessToken = jsonDecode(token);
+  void removeFromCart(String productId) async {
+    bool? confirmDelete = await Get.defaultDialog(
+      title: "Confirm Remove",
+      middleText: "Are you sure you want to remove this item from your cart?",
+      backgroundColor: Colors.white,
+      textConfirm: "Yes",
+      textCancel: "No",
+      confirmTextColor: Colors.white,
+      cancelTextColor: Colors.black,
+      onConfirm: () {
+        Get.back(result: true); // Returns true if confirmed
+      },
+      onCancel: () {
+        Get.back(result: false); // Returns false if canceled
+      },
+    );
 
-    setLoading = true;
-    var url = Uri.parse('${Environment.appBaseUrl}/api/cart/delete/$productId');
+    // Only proceed if user confirmed
+    if (confirmDelete == true) {
+      String token = box.read('token');
+      String accessToken = jsonDecode(token);
 
-    try {
-      var response = await http.delete(url, headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $accessToken'
-      });
+      setLoading = true;
+      var url =
+          Uri.parse('${Environment.appBaseUrl}/api/cart/delete/$productId');
 
-      if (response.statusCode == 200) {
-        setLoading = false;
-        CartResponse data = cartResponseFromJson(response.body);
+      try {
+        var response = await http.delete(url, headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken'
+        });
 
-        box.write("cart", jsonEncode(data.count));
+        if (response.statusCode == 200) {
+          setLoading = false;
+          CartResponse data = cartResponseFromJson(response.body);
 
-        Get.snackbar(
-            "Product removed", "The product was removed from cart successfully",
+          box.write("cart", jsonEncode(data.count));
+
+          Get.snackbar(
+            "Product removed",
+            "The product was removed from cart successfully",
             colorText: kLightWhite,
             backgroundColor: kPrimary,
-            icon: const Icon(Icons.add_alert));
-        Get.offAll(() => MainScreen());
-      } else {
-        var data = apiErrorFromJson(response.body);
-
-        Get.snackbar(data.message, "Failed to add address, please try again",
+            icon: const Icon(Icons.add_alert),
+          );
+          Get.offAll(() => MainScreen());
+        } else {
+          var data = apiErrorFromJson(response.body);
+          Get.snackbar(
+            data.message,
+            "Failed to remove the item, please try again",
             colorText: kLightWhite,
             backgroundColor: kRed,
-            icon: const Icon(Icons.error));
-      }
-    } catch (e) {
-      setLoading = false;
-      Get.snackbar(e.toString(), "Failed to add address, please try again",
+            icon: const Icon(Icons.error),
+          );
+        }
+      } catch (e) {
+        setLoading = false;
+        Get.snackbar(
+          e.toString(),
+          "Failed to remove the item, please try again",
           colorText: kLightWhite,
           backgroundColor: kRed,
-          icon: const Icon(Icons.error));
-    } finally {
-      setLoading = false;
+          icon: const Icon(Icons.error),
+        );
+      } finally {
+        setLoading = false;
+      }
     }
   }
 }

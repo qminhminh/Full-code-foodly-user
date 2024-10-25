@@ -24,6 +24,18 @@ class CartPage extends HookWidget {
     final items = hookResult.data;
     final isLoading = hookResult.isLoading;
 
+    // Group items by restaurant ID
+    Map<String, List<UserCart>> groupedItems = {};
+    if (items != null) {
+      for (var item in items) {
+        String restaurantId = item.productId.restaurant.id;
+        if (!groupedItems.containsKey(restaurantId)) {
+          groupedItems[restaurantId] = [];
+        }
+        groupedItems[restaurantId]!.add(item);
+      }
+    }
+
     return token == null
         ? const LoginRedirection()
         : Scaffold(
@@ -33,34 +45,53 @@ class CartPage extends HookWidget {
               elevation: 0.3,
               title: Center(
                 child: ReusableText(
-                    text: "Cart", style: appStyle(16, kDark, FontWeight.bold)),
+                  text: "Cart",
+                  style: appStyle(16, kDark, FontWeight.bold),
+                ),
               ),
             ),
             body: SafeArea(
               child: CustomContainer(
-                  containerContent: Column(
-                children: [
-                  isLoading
-                      ? const FoodsListShimmer()
-                      : Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12.w, vertical: 10.h),
-                          width: width,
-                          height: hieght,
-                          color: kLightWhite,
-                          child: ListView.builder(
+                containerContent: Column(
+                  children: [
+                    isLoading
+                        ? const FoodsListShimmer()
+                        : Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                              vertical: 10.h,
+                            ),
+                            width: width,
+                            height: hieght,
+                            color: kLightWhite,
+                            child: ListView.builder(
                               padding: EdgeInsets.zero,
-                              itemCount: items.length,
+                              itemCount: groupedItems.length,
                               itemBuilder: (context, i) {
-                                UserCart cart = items[i];
-                                box.write("cart", items.length.toString());
-                                return CartTile(
-                                  item: cart,
+                                String restaurantId =
+                                    groupedItems.keys.elementAt(i);
+                                List<UserCart> cartItems =
+                                    groupedItems[restaurantId]!;
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Display restaurant name or voucher
+
+                                    ...cartItems.map((cart) {
+                                      return CartTile(
+                                        item: cart,
+                                        groupedItems: cartItems,
+                                      );
+                                    }).toList(),
+                                  ],
                                 );
-                              }),
-                        ),
-                ],
-              )),
+                              },
+                            ),
+                          ),
+                  ],
+                ),
+              ),
             ),
           );
   }

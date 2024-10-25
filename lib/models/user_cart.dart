@@ -17,7 +17,7 @@ class UserCart {
   final List<String> additives;
   final String instructions;
   final double totalPrice;
-  final int quantity;
+  late final int quantity;
 
   UserCart({
     required this.id,
@@ -90,23 +90,27 @@ class Restaurant {
   final Coords coords;
   final String id;
   final String time;
+  final String title;
 
   Restaurant({
     required this.coords,
     required this.id,
     required this.time,
+    required this.title,
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
         coords: Coords.fromJson(json["coords"]),
         id: json["_id"],
         time: json["time"],
+        title: json["title"],
       );
 
   Map<String, dynamic> toJson() => {
         "coords": coords.toJson(),
         "_id": id,
         "time": time,
+        "title": title,
       };
 }
 

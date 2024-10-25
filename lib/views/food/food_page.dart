@@ -164,18 +164,19 @@ class _FoodPageState extends State<FoodPage> {
                 ),
               ),
               Positioned(
-                  bottom: 10,
-                  right: 15,
-                  child: CustomButton(
-                      btnWidth: width / 2.9,
-                      radius: 30,
-                      color: kPrimary,
-                      onTap: () {
-                        Get.to(() => RestaurantPage(restaurant: restaurantData),
-                            transition: Transition.fade,
-                            duration: const Duration(seconds: 1));
-                      },
-                      text: "Open Restaurant"))
+                bottom: 10,
+                right: 15,
+                child: CustomButton(
+                    btnWidth: width / 2.9,
+                    radius: 30,
+                    color: kPrimary,
+                    onTap: () {
+                      Get.to(() => RestaurantPage(restaurant: restaurantData),
+                          transition: Transition.fade,
+                          duration: const Duration(seconds: 1));
+                    },
+                    text: "Open Restaurant"),
+              )
             ],
           ),
           Padding(
@@ -187,13 +188,15 @@ class _FoodPageState extends State<FoodPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ReusableText(
-                        text: widget.food.title,
-                        style: appStyle(18, kDark, FontWeight.w600)),
+                      text: widget.food.title,
+                      style: appStyle(18, kDark, FontWeight.w600),
+                    ),
                     Obx(
                       () => ReusableText(
-                          text:
-                              "\$ ${((widget.food.price + foodController.additiveTotal) * counterController.count.toDouble()).toStringAsFixed(2)}",
-                          style: appStyle(18, kPrimary, FontWeight.w600)),
+                        text:
+                            "\$ ${((widget.food.price + foodController.additiveTotal) * counterController.count.toDouble()).toStringAsFixed(2)}",
+                        style: appStyle(18, kPrimary, FontWeight.w600),
+                      ),
                     )
                   ],
                 ),
@@ -211,35 +214,39 @@ class _FoodPageState extends State<FoodPage> {
                 SizedBox(
                   height: 15.h,
                   child: ListView.builder(
-                      itemCount: widget.food.foodTags.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, i) {
-                        final tag = widget.food.foodTags[i];
-                        return Container(
-                          margin: EdgeInsets.only(right: 5.h),
-                          decoration: BoxDecoration(
-                              color: kPrimary,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15.r))),
-                          child: Center(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: ReusableText(
-                                  text: tag,
-                                  style: appStyle(
-                                      8, kLightWhite, FontWeight.w400)),
+                    itemCount: widget.food.foodTags.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, i) {
+                      final tag = widget.food.foodTags[i];
+                      return Container(
+                        margin: EdgeInsets.only(right: 5.h),
+                        decoration: BoxDecoration(
+                          color: kPrimary,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(15.r),
+                          ),
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            child: ReusableText(
+                              text: tag,
+                              style: appStyle(8, kLightWhite, FontWeight.w400),
                             ),
                           ),
-                        );
-                      }),
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 SizedBox(
                   height: 15.h,
                 ),
                 ReusableText(
-                    text: "Addittives and Toppings",
-                    style: appStyle(18, kDark, FontWeight.w600)),
+                  text: "Addittives and Toppings",
+                  style: appStyle(18, kDark, FontWeight.w600),
+                ),
                 Column(
                   children:
                       List.generate(foodController.additivesList.length, (i) {
@@ -265,8 +272,9 @@ class _FoodPageState extends State<FoodPage> {
                   }),
                 ),
                 ReusableText(
-                    text: "Preferences",
-                    style: appStyle(18, kDark, FontWeight.w600)),
+                  text: "Preferences",
+                  style: appStyle(18, kDark, FontWeight.w600),
+                ),
                 SizedBox(
                   height: 5.h,
                 ),
@@ -291,8 +299,9 @@ class _FoodPageState extends State<FoodPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ReusableText(
-                        text: "Quantity",
-                        style: appStyle(18, kDark, FontWeight.w600)),
+                      text: "Quantity",
+                      style: appStyle(18, kDark, FontWeight.w600),
+                    ),
                     Row(
                       children: [
                         GestureDetector(
