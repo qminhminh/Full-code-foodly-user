@@ -3,15 +3,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:foodly_user/common/app_style.dart';
 import 'package:foodly_user/common/reusable_text.dart';
+import 'package:foodly_user/common/shimmers/voucher_shimmer.dart';
 import 'package:foodly_user/constants/constants.dart';
 import 'package:foodly_user/controllers/cart_controller.dart';
 import 'package:foodly_user/controllers/counter_controller.dart';
 import 'package:foodly_user/hooks/fetchVouchers.dart';
 import 'package:foodly_user/models/user_cart.dart';
 import 'package:foodly_user/models/vouchers.dart';
+import 'package:foodly_user/views/food/widgets/empty_page.dart';
 import 'package:get/get.dart';
 
 class CartTile extends HookWidget {
@@ -24,6 +27,7 @@ class CartTile extends HookWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(CartController());
     final CounterController counterController = Get.put(CounterController());
+    final cartController = Get.put(CartController());
     Voucher? selectedVoucher;
 
     // State to manage the selected products and total price
@@ -41,225 +45,262 @@ class CartTile extends HookWidget {
       totalPrice.value = sum;
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Display Restaurant Name for the group
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            'Restaurant: ${item.productId.restaurant.title}',
-            style: appStyle(18.sp, Colors.black, FontWeight.bold),
+    return Container(
+      margin: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Display Restaurant Name for the group
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'Restaurant: ${item.productId.restaurant.title} >',
+                  style: appStyle(18.sp, Colors.black, FontWeight.bold),
+                ),
+              ),
+            ],
           ),
-        ),
-        // Grouped product items
-        ...groupedItems.map((product) {
-          return Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: Stack(
-              clipBehavior: Clip.hardEdge,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        spreadRadius: 1,
-                        blurRadius: 5,
+          // Grouped product items
+          ...groupedItems.map((product) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              child: Stack(
+                clipBehavior: Clip.hardEdge,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
                       ),
-                    ],
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Product Image
-                      ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(12)),
-                        child: Image.network(
-                          product.productId.imageUrl[0],
-                          height: 35.h,
-                          width: 35.h,
-                          fit: BoxFit.cover,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          spreadRadius: 1,
+                          blurRadius: 5,
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      // Product Info
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      ],
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
-                            ReusableText(
-                              text: product.productId.title,
-                              style: appStyle(
-                                12.sp,
-                                Colors.black,
-                                FontWeight.bold,
+                            Checkbox(
+                              value: selectedProducts.value.contains(product),
+                              onChanged: (bool? value) {
+                                if (value == true) {
+                                  selectedProducts.value.add(product);
+                                } else {
+                                  selectedProducts.value.remove(product);
+                                }
+                                updateTotalPrice(); // Update total price when selection changes
+                              },
+                            ),
+                            const SizedBox(width: 4),
+                            ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(12)),
+                              child: Image.network(
+                                product.productId.imageUrl[0],
+                                height: 75.h,
+                                width: 75.h,
+                                fit: BoxFit.cover,
                               ),
-                            ),
-                            SizedBox(height: 5.h),
-                            ReusableText(
-                              text:
-                                  "Delivery time: ${product.productId.restaurant.time}",
-                              style:
-                                  appStyle(10.sp, Colors.grey, FontWeight.w400),
-                            ),
-                            SizedBox(height: 5.h),
-                            // Additives
-                            Row(
-                              children: product.additives.map((additive) {
-                                return Container(
-                                  margin: const EdgeInsets.only(right: 5),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 2,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
-                                  ),
-                                  child: ReusableText(
-                                    text: additive,
-                                    style: appStyle(
-                                      12.sp,
-                                      Colors.black,
-                                      FontWeight.w400,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
                             ),
                           ],
                         ),
-                      ),
-                      // Quantity adjustment buttons
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
+                        // Product Image
+
+                        const SizedBox(width: 10),
+                        // Product Info
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  counterController.decrement();
-                                  updateTotalPrice();
-                                },
-                                child: const Icon(
-                                  AntDesign.minussquareo,
-                                  color: kPrimary,
+                              ReusableText(
+                                text: product.productId.title,
+                                style: appStyle(
+                                  15.sp,
+                                  Colors.black,
+                                  FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(
-                                width: 6.w,
+                              SizedBox(height: 5.h),
+                              ReusableText(
+                                text:
+                                    "Delivery time: ${product.productId.restaurant.time}",
+                                style: appStyle(
+                                    10.sp, Colors.grey, FontWeight.w400),
                               ),
-                              Obx(
-                                () => Padding(
-                                  padding: const EdgeInsets.only(top: 4.0),
-                                  child: ReusableText(
-                                    text: "${counterController.count}",
-                                    style: appStyle(16, kDark, FontWeight.w500),
+                              SizedBox(height: 5.h),
+                              // Additives
+                              Row(
+                                children: product.additives.map((additive) {
+                                  return Container(
+                                    margin: const EdgeInsets.only(right: 5),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                    ),
+                                    child: ReusableText(
+                                      text: additive,
+                                      style: appStyle(
+                                        12.sp,
+                                        Colors.black,
+                                        FontWeight.w400,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                              SizedBox(height: 5.h),
+                              Row(
+                                children: [
+                                  Obx(
+                                    () => Text(
+                                      "\$${(product.totalPrice * counterController.count.toDouble()).toStringAsFixed(2)}",
+                                      style: appStyle(
+                                          16.sp, Colors.black, FontWeight.bold),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 6.w,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  counterController.increment();
-                                  updateTotalPrice();
-                                },
-                                child: const Icon(
-                                  AntDesign.plussquareo,
-                                  color: kPrimary,
-                                ),
+                                  SizedBox(
+                                    width: 10.w,
+                                  ), // Add spacing between price and counter
+                                  GestureDetector(
+                                    onTap: () {
+                                      if (counterController.count <= 1) {
+                                        controller.removeFromCart(product.id);
+                                      } else {
+                                        counterController.decrement();
+                                        updateTotalPrice();
+                                      }
+                                    },
+                                    child: const Icon(
+                                      AntDesign.minussquareo,
+                                      color: kPrimary,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 6.w,
+                                  ),
+                                  Obx(
+                                    () => Padding(
+                                      padding: const EdgeInsets.only(top: 4.0),
+                                      child: ReusableText(
+                                        text: "${counterController.count}",
+                                        style: appStyle(
+                                            16, kDark, FontWeight.w500),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 6.w,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      counterController.increment();
+                                      updateTotalPrice();
+                                    },
+                                    child: const Icon(
+                                      AntDesign.plussquareo,
+                                      color: kPrimary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              controller.removeFromCart(product.id);
-                            },
-                            child: const Icon(
-                              Icons.delete,
-                              size: 24,
-                              color: Colors.red,
-                            ),
-                          ),
-                          SizedBox(height: 8.h),
-                          Obx(
-                            () => Text(
-                              "\$${(product.totalPrice * counterController.count.toDouble()).toStringAsFixed(2)}",
-                              style: appStyle(
-                                  16.sp, Colors.black, FontWeight.bold),
-                            ),
-                          ),
-                          Checkbox(
-                            value: selectedProducts.value.contains(product),
-                            onChanged: (bool? value) {
-                              if (value == true) {
-                                selectedProducts.value.add(product);
-                              } else {
-                                selectedProducts.value.remove(product);
-                              }
-                              updateTotalPrice(); // Update total price when selection changes
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+          // Voucher Selection Button
+          const Divider(),
+          Obx(
+            () => GestureDetector(
+              onTap: () async {
+                final result = await _showVoucherSelectionSheet(context, item);
+                if (result != null && result is Voucher) {
+                  selectedVoucher = result;
+                  cartController.updateSelectedVoucher(result);
+
+                  updateTotalPrice(); // Update total price when voucher is selected
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: selectedVoucher != null ? kPrimary : Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/vouvher.svg',
+                      width: 40.w,
+                      height: 40.h,
+                    ),
+                    const SizedBox(width: 15),
+                    Text(
+                      cartController.selectedVoucher.value != null
+                          ? "Voucher:${cartController.selectedVoucher.value!.title} - ${cartController.selectedVoucher.value!.discount}% >"
+                          : "Apply Voucher >",
+                      style: appStyle(16.sp, Colors.black, FontWeight.w500),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 16.h), // Add some space below the voucher button
+          // Total Price Display
+          const Divider(),
+
+          Container(
+            color: Colors.white,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    'Total Price: \$${totalPrice.value.toStringAsFixed(2)}',
+                    style: appStyle(14.sp, Colors.black, FontWeight.bold),
+                  ),
+                ),
+                SizedBox(width: 50.w),
+                // Apply Total Button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kPrimary,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    // Set the desired width
+                  ),
+                  onPressed: () {},
+                  child: const Text(
+                    "Proceed to Checkout",
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ],
             ),
-          );
-        }).toList(),
-        // Voucher Selection Button
-        GestureDetector(
-          onTap: () async {
-            final result = await _showVoucherSelectionSheet(context, item);
-            if (result != null && result is Voucher) {
-              selectedVoucher = result;
-              updateTotalPrice(); // Update total price when voucher is selected
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: selectedVoucher != null ? Colors.orange : Colors.grey[300],
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Text(
-              selectedVoucher != null
-                  ? "Voucher: ${selectedVoucher.title} - ${selectedVoucher.discount}%"
-                  : "Apply Voucher",
-              style: appStyle(14.sp, Colors.white, FontWeight.w500),
-            ),
           ),
-        ),
-        SizedBox(height: 16.h), // Add some space below the voucher button
-        // Total Price Display
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            'Total Price: \$${totalPrice.value.toStringAsFixed(2)}',
-            style: appStyle(18.sp, Colors.black, FontWeight.bold),
-          ),
-        ),
-        // Apply Total Button
-        ElevatedButton(
-          onPressed: () {
-            // Handle checkout or further action
-            // This could involve navigating to a summary page, etc.
-          },
-          child: const Text("Proceed to Checkout"),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -275,48 +316,91 @@ class CartTile extends HookWidget {
 }
 
 class VoucherList extends HookWidget {
-  const VoucherList(this.restaurantId, {super.key});
-  final String restaurantId;
+  const VoucherList(this.restaurantid, {super.key});
+  final String restaurantid;
 
   @override
   Widget build(BuildContext context) {
-    final vouchers = useFetchVoucher(restaurantId).data ?? [];
+    final hookResult = useFetchVoucher(restaurantid);
+    final vouchers = hookResult.data;
+    final isLoading = hookResult.isLoading;
     final selectedVoucher = useState<Voucher?>(null);
 
+    if (isLoading) {
+      return const VouchersListShimmer();
+    } else if (vouchers!.isEmpty) {
+      return const EmptyPage();
+    }
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      height: 400.h,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "Select a Voucher",
-            style: appStyle(20.sp, Colors.black, FontWeight.bold),
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              color: kPrimary,
+            ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 10.h),
           Expanded(
             child: ListView.builder(
               itemCount: vouchers.length,
               itemBuilder: (context, index) {
                 Voucher voucher = vouchers[index];
-                return CheckboxListTile(
-                  title: Text(voucher.title),
-                  subtitle: Text('Discount: ${voucher.discount}%'),
-                  value: selectedVoucher.value == voucher,
-                  onChanged: (bool? value) {
-                    if (value == true) {
-                      selectedVoucher.value = voucher;
-                    }
-                  },
+                bool isSelectable = voucher.addVoucherSwitch;
+
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                      vertical: 8), // Khoảng cách giữa các items
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isSelectable
+                        ? kPrimary
+                        : Colors.grey[300], // Màu cam nhạt hoặc xám nhạt
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      voucher.title,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text('Discount: ${voucher.discount.toString()}%'),
+                    trailing: Radio<Voucher>(
+                      value: voucher,
+                      groupValue: selectedVoucher.value,
+                      onChanged: isSelectable
+                          ? (Voucher? value) {
+                              selectedVoucher.value = value;
+                            }
+                          : null, // Không cho phép chọn nếu không thể
+                      activeColor: kPrimary,
+                    ),
+                  ),
                 );
               },
             ),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kPrimary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
             onPressed: () {
               Navigator.pop(context, selectedVoucher.value);
             },
-            child: const Text("Apply"),
-          ),
+            child: const Text(
+              "Confirm",
+              style: TextStyle(
+                color: kWhite,
+                fontSize: 16,
+              ),
+            ),
+          )
         ],
       ),
     );

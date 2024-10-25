@@ -22,11 +22,12 @@ class FoodTile extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Get.to(
-            () => FoodPage(
-                  food: food,
-                ),
-            transition: Transition.native,
-            duration: const Duration(seconds: 1));
+          () => FoodPage(
+            food: food,
+          ),
+          transition: Transition.native,
+          duration: const Duration(seconds: 1),
+        );
       },
       child: Stack(
         clipBehavior: Clip.hardEdge,
@@ -36,8 +37,9 @@ class FoodTile extends StatelessWidget {
             height: 80,
             width: width,
             decoration: const BoxDecoration(
-                color: kOffWhite,
-                borderRadius: BorderRadius.all(Radius.circular(9))),
+              color: kOffWhite,
+              borderRadius: BorderRadius.all(Radius.circular(9)),
+            ),
             child: Container(
               padding: const EdgeInsets.all(4),
               child: Row(
@@ -55,24 +57,24 @@ class FoodTile extends StatelessWidget {
                               fit: BoxFit.cover,
                             )),
                         Positioned(
-                            bottom: 0,
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.only(left: 6, bottom: 2),
-                              color: kGray.withOpacity(0.6),
-                              height: 16,
-                              width: width,
-                              child: RatingBarIndicator(
-                                rating: 5,
-                                itemBuilder: (context, index) => const Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                ),
-                                itemCount: 5,
-                                itemSize: 15.0,
-                                direction: Axis.horizontal,
+                          bottom: 0,
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 6, bottom: 2),
+                            color: kGray.withOpacity(0.6),
+                            height: 16,
+                            width: width,
+                            child: RatingBarIndicator(
+                              rating: 5,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
                               ),
-                            ))
+                              itemCount: 5,
+                              itemSize: 15.0,
+                              direction: Axis.horizontal,
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -87,11 +89,13 @@ class FoodTile extends StatelessWidget {
                         height: 5,
                       ),
                       ReusableText(
-                          text: food.title,
-                          style: appStyle(11, kDark, FontWeight.w400)),
+                        text: food.title,
+                        style: appStyle(11, kDark, FontWeight.w400),
+                      ),
                       ReusableText(
-                          text: "Delivery time: ${food.time}",
-                          style: appStyle(9, kGray, FontWeight.w400)),
+                        text: "Delivery time: ${food.time}",
+                        style: appStyle(9, kGray, FontWeight.w400),
+                      ),
                       const SizedBox(
                         height: 5,
                       ),
@@ -106,16 +110,19 @@ class FoodTile extends StatelessWidget {
                               return Container(
                                 margin: const EdgeInsets.only(right: 5),
                                 decoration: const BoxDecoration(
-                                    color: kSecondaryLight,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(9))),
+                                  color: kSecondaryLight,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(9),
+                                  ),
+                                ),
                                 child: Center(
                                   child: Padding(
                                     padding: const EdgeInsets.all(2.0),
                                     child: ReusableText(
-                                        text: addittives.title,
-                                        style: appStyle(
-                                            8, kGray, FontWeight.w400)),
+                                      text: addittives.title,
+                                      style:
+                                          appStyle(8, kGray, FontWeight.w400),
+                                    ),
                                   ),
                                 ),
                               );
@@ -134,10 +141,11 @@ class FoodTile extends StatelessWidget {
               width: 60.h,
               height: 23.h,
               decoration: const BoxDecoration(
-                  color: kPrimary,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  )),
+                color: kPrimary,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
               child: Center(
                 child: ReusableText(
                   text: "\$ ${food.price.toString()}",
@@ -147,25 +155,29 @@ class FoodTile extends StatelessWidget {
             ),
           ),
           Positioned(
-              right: 70.h,
-              top: 6.h,
-              child: Container(
-                width: 23.w,
-                height: 23.h,
-                decoration: BoxDecoration(
-                    color: kSecondary,
-                    borderRadius: BorderRadius.all(Radius.circular(50.r))),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: const Center(
-                    child: Icon(
-                      MaterialCommunityIcons.cart_plus,
-                      size: 15,
-                      color: kLightWhite,
-                    ),
+            right: 70.h,
+            top: 6.h,
+            child: Container(
+              width: 23.w,
+              height: 23.h,
+              decoration: BoxDecoration(
+                color: kSecondary,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(50.r),
+                ),
+              ),
+              child: GestureDetector(
+                onTap: () {},
+                child: const Center(
+                  child: Icon(
+                    MaterialCommunityIcons.cart_plus,
+                    size: 15,
+                    color: kLightWhite,
                   ),
                 ),
-              ))
+              ),
+            ),
+          )
         ],
       ),
     );

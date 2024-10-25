@@ -636,12 +636,15 @@ class VoucherList extends HookWidget {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: isSelectable
-                        ? Colors.orange[200]
+                        ? kPrimary
                         : Colors.grey[300], // Màu cam nhạt hoặc xám nhạt
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: ListTile(
-                    title: Text(voucher.title),
+                    title: Text(
+                      voucher.title,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     subtitle: Text('Discount: ${voucher.discount.toString()}%'),
                     trailing: Radio<Voucher>(
                       value: voucher,

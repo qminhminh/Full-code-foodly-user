@@ -78,12 +78,10 @@ class CartPage extends HookWidget {
                                   children: [
                                     // Display restaurant name or voucher
 
-                                    ...cartItems.map((cart) {
-                                      return CartTile(
-                                        item: cart,
-                                        groupedItems: cartItems,
-                                      );
-                                    }).toList(),
+                                    CartTile(
+                                      item: cartItems.first,
+                                      groupedItems: cartItems,
+                                    )
                                   ],
                                 );
                               },
