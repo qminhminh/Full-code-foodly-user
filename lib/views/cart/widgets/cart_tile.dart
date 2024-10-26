@@ -10,7 +10,7 @@ import 'package:foodly_user/common/reusable_text.dart';
 import 'package:foodly_user/common/shimmers/voucher_shimmer.dart';
 import 'package:foodly_user/constants/constants.dart';
 import 'package:foodly_user/controllers/cart_controller.dart';
-import 'package:foodly_user/controllers/counter_controller.dart';
+import 'package:foodly_user/controllers/couant_cart_controller.dart';
 import 'package:foodly_user/hooks/fetchVouchers.dart';
 import 'package:foodly_user/models/user_cart.dart';
 import 'package:foodly_user/models/vouchers.dart';
@@ -26,7 +26,7 @@ class CartTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CartController());
-    final CounterController counterController = Get.put(CounterController());
+    final counterController = Get.put(CounterCartController());
     final cartController = Get.put(CartController());
     Voucher? selectedVoucher;
 
@@ -36,13 +36,24 @@ class CartTile extends HookWidget {
 
     void updateTotalPrice() {
       double sum = 0.0;
+
       for (var product in selectedProducts.value) {
-        double discount = (selectedVoucher?.discount ?? 0.0).toDouble();
+        // Get the individual product quantity from the CounterController
+        int quantity = counterController.getCount(product.productId.id);
+
+        // Calculate the total price for this product
         double productTotal =
-            product.totalPrice * counterController.count.toDouble();
-        sum += (productTotal - (productTotal * (discount / 100)));
+            product.productId.price * quantity; // Use the product's price
+
+        // Apply any selected voucher discount
+        double discount = (selectedVoucher?.discount ?? 0.0).toDouble();
+        double discountAmount = productTotal * (discount / 100);
+
+        // Add the discounted price to the total sum
+        sum += (productTotal - discountAmount);
       }
-      totalPrice.value = sum;
+
+      totalPrice.value = sum; // Update the total price
     }
 
     return Container(
@@ -64,6 +75,10 @@ class CartTile extends HookWidget {
           ),
           // Grouped product items
           ...groupedItems.map((product) {
+            if (!counterController.counts.containsKey(product.productId.id)) {
+              counterController.initializeCount(
+                  product.productId.id, product.quantity);
+            }
             return Container(
               margin: const EdgeInsets.only(bottom: 12),
               child: Stack(
@@ -162,12 +177,12 @@ class CartTile extends HookWidget {
                                   );
                                 }).toList(),
                               ),
-                              SizedBox(height: 5.h),
+                              SizedBox(height: 20.h),
                               Row(
                                 children: [
                                   Obx(
                                     () => Text(
-                                      "\$${(product.totalPrice * counterController.count.toDouble()).toStringAsFixed(2)}",
+                                      "\$${(product.productId.price * counterController.getCount(product.productId.id)).toStringAsFixed(2)}",
                                       style: appStyle(
                                           16.sp, Colors.black, FontWeight.bold),
                                     ),
@@ -177,11 +192,24 @@ class CartTile extends HookWidget {
                                   ), // Add spacing between price and counter
                                   GestureDetector(
                                     onTap: () {
-                                      if (counterController.count <= 1) {
+                                      if (counterController
+                                              .getCount(product.productId.id) <=
+                                          1) {
                                         controller.removeFromCart(product.id);
                                       } else {
-                                        counterController.decrement();
+                                        counterController
+                                            .decrement(product.productId.id);
                                         updateTotalPrice();
+                                        controller.updateCountToCart(
+                                          item.id,
+                                          item.userId,
+                                          item.productId.id,
+                                          counterController
+                                              .getCount(product.productId.id),
+                                          (product.productId.price *
+                                              counterController.getCount(
+                                                  product.productId.id)),
+                                        );
                                       }
                                     },
                                     child: const Icon(
@@ -196,7 +224,8 @@ class CartTile extends HookWidget {
                                     () => Padding(
                                       padding: const EdgeInsets.only(top: 4.0),
                                       child: ReusableText(
-                                        text: "${counterController.count}",
+                                        text:
+                                            "${counterController.getCount(product.productId.id)}",
                                         style: appStyle(
                                             16, kDark, FontWeight.w500),
                                       ),
@@ -207,8 +236,19 @@ class CartTile extends HookWidget {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      counterController.increment();
+                                      counterController
+                                          .increment(product.productId.id);
                                       updateTotalPrice();
+                                      controller.updateCountToCart(
+                                        item.id,
+                                        item.userId,
+                                        item.productId.id,
+                                        counterController
+                                            .getCount(product.productId.id),
+                                        (product.productId.price *
+                                            counterController.getCount(
+                                                product.productId.id)),
+                                      );
                                     },
                                     child: const Icon(
                                       AntDesign.plussquareo,
@@ -265,7 +305,7 @@ class CartTile extends HookWidget {
             ),
           ),
 
-          SizedBox(height: 16.h), // Add some space below the voucher button
+          // Add some space below the voucher button
           // Total Price Display
           const Divider(),
 

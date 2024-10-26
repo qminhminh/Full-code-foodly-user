@@ -161,12 +161,61 @@ class CartController extends GetxController {
     }
   }
 
-  void updateCountToCart(String cartId, String userId, String productId) async {
+  void updateCountToCart(String cartId, String userId, String productId,
+      var quantity, var totalPrice) async {
     String token = box.read('token');
     String accessToken = jsonDecode(token);
 
     setLoading = true;
-    var url = Uri.parse('${Environment.appBaseUrl}/api/cart');
+    var url =
+        Uri.parse('${Environment.appBaseUrl}/api/cart/update-count-to-cart');
+
+    try {
+      var response = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken'
+        },
+        body: jsonEncode({
+          "cartId": cartId,
+          "userId": userId,
+          "productId": productId,
+          "quantity": quantity,
+          "totalPrice": totalPrice
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        setLoading = false;
+      } else {
+        var data = apiErrorFromJson(response.body);
+        Get.snackbar(
+          "Error",
+
+          "Failed, please try again", // Thêm "Error" cho rõ ràng
+          colorText: kLightWhite,
+          backgroundColor: kRed,
+          icon: const Icon(Icons.error),
+        );
+      }
+    } catch (e) {
+      setLoading = false;
+      Get.snackbar(e.toString(), "Failed, please try again",
+          colorText: kLightWhite,
+          backgroundColor: kRed,
+          icon: const Icon(Icons.error));
+    } finally {
+      setLoading = false;
+    }
+  }
+
+  void decrementProductQuantity(String userId, String productId) async {
+    String token = box.read('token');
+    String accessToken = jsonDecode(token);
+
+    setLoading = true;
+    var url = Uri.parse('${Environment.appBaseUrl}/api/cart/decrement');
 
     try {
       var response = await http.post(
@@ -175,32 +224,74 @@ class CartController extends GetxController {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken'
         },
-        // body: item,
+        body: jsonEncode({
+          "userId": userId,
+          "productId": productId,
+        }),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         setLoading = false;
-
-        CartResponse data = cartResponseFromJson(response.body);
-
-        box.write("cart", jsonEncode(data.count));
-
-        Get.snackbar("Product added successfully to cart",
-            "You can now order multiple items via the cart",
-            colorText: kLightWhite,
-            backgroundColor: kPrimary,
-            icon: const Icon(Icons.add_alert));
+        final data = jsonDecode(response.body);
       } else {
         var data = apiErrorFromJson(response.body);
-
-        Get.snackbar(data.message, "Failed to add address, please try again",
-            colorText: kLightWhite,
-            backgroundColor: kRed,
-            icon: const Icon(Icons.error));
+        Get.snackbar(
+          "Error",
+          data.message, // Thêm "Error" cho rõ ràng
+          // Thêm "Error" cho rõ ràng
+          colorText: kLightWhite,
+          backgroundColor: kRed,
+          icon: const Icon(Icons.error),
+        );
       }
     } catch (e) {
       setLoading = false;
-      Get.snackbar(e.toString(), "Failed to add address, please try again",
+      Get.snackbar(e.toString(), "Failed, please try again",
+          colorText: kLightWhite,
+          backgroundColor: kRed,
+          icon: const Icon(Icons.error));
+    } finally {
+      setLoading = false;
+    }
+  }
+
+  void incrementProductQuantity(String userId, String productId) async {
+    String token = box.read('token');
+    String accessToken = jsonDecode(token);
+
+    setLoading = true;
+    var url = Uri.parse('${Environment.appBaseUrl}/api/cart/increment');
+
+    try {
+      var response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken'
+        },
+        body: jsonEncode({
+          "userId": userId,
+          "productId": productId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        setLoading = false;
+        final data = jsonDecode(response.body);
+      } else {
+        var data = apiErrorFromJson(response.body);
+        Get.snackbar(
+          "Error",
+          data.message, // Thêm "Error" cho rõ ràng
+          // Thêm "Error" cho rõ ràng
+          colorText: kLightWhite,
+          backgroundColor: kRed,
+          icon: const Icon(Icons.error),
+        );
+      }
+    } catch (e) {
+      setLoading = false;
+      Get.snackbar(e.toString(), "Failed, please try again",
           colorText: kLightWhite,
           backgroundColor: kRed,
           icon: const Icon(Icons.error));

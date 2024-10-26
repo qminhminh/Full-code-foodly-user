@@ -57,6 +57,7 @@ class ProductId {
   final double rating;
   final String ratingCount;
   final List<String> imageUrl;
+  final double price;
 
   ProductId({
     required this.id,
@@ -65,6 +66,7 @@ class ProductId {
     required this.rating,
     required this.ratingCount,
     required this.imageUrl,
+    required this.price,
   });
 
   factory ProductId.fromJson(Map<String, dynamic> json) => ProductId(
@@ -74,6 +76,7 @@ class ProductId {
         rating: json["rating"]?.toDouble(),
         ratingCount: json["ratingCount"],
         imageUrl: List<String>.from(json["imageUrl"].map((x) => x)),
+        price: json["price"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -83,6 +86,7 @@ class ProductId {
         "rating": rating,
         "ratingCount": ratingCount,
         "imageUrl": List<dynamic>.from(imageUrl.map((x) => x)),
+        "price": price,
       };
 }
 

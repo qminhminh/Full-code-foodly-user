@@ -73,7 +73,6 @@ class _FoodPageState extends State<FoodPage> {
       backgroundColor: kLightWhite,
       body: ListView(
         padding: EdgeInsets.zero,
-        physics: const NeverScrollableScrollPhysics(),
         children: [
           Stack(
             children: [
@@ -167,15 +166,16 @@ class _FoodPageState extends State<FoodPage> {
                 bottom: 10,
                 right: 15,
                 child: CustomButton(
-                    btnWidth: width / 2.9,
-                    radius: 30,
-                    color: kPrimary,
-                    onTap: () {
-                      Get.to(() => RestaurantPage(restaurant: restaurantData),
-                          transition: Transition.fade,
-                          duration: const Duration(seconds: 1));
-                    },
-                    text: "Open Restaurant"),
+                  btnWidth: width / 2.9,
+                  radius: 30,
+                  color: kPrimary,
+                  onTap: () {
+                    Get.to(() => RestaurantPage(restaurant: restaurantData),
+                        transition: Transition.fade,
+                        duration: const Duration(seconds: 1));
+                  },
+                  text: "Open Restaurant",
+                ),
               )
             ],
           ),
@@ -318,8 +318,9 @@ class _FoodPageState extends State<FoodPage> {
                           () => Padding(
                             padding: const EdgeInsets.only(top: 4.0),
                             child: ReusableText(
-                                text: "${counterController.count}",
-                                style: appStyle(16, kDark, FontWeight.w500)),
+                              text: "${counterController.count}",
+                              style: appStyle(16, kDark, FontWeight.w500),
+                            ),
                           ),
                         ),
                         SizedBox(
