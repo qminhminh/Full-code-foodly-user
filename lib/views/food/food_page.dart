@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:foodly_user/common/address_modal.dart';
 import 'package:foodly_user/common/app_style.dart';
@@ -360,21 +361,32 @@ class _FoodPageState extends State<FoodPage> {
               child: Container(
                 padding: const EdgeInsets.all(12), // Thêm khoảng cách bên trong
                 decoration: BoxDecoration(
-                  color:
-                      const Color.fromARGB(255, 189, 183, 183), // Màu xám đậm
+                  color: selectedVoucher != null
+                      ? kPrimary
+                      : Colors.white, // Màu xám đậm
                   borderRadius:
                       BorderRadius.circular(10), // Tùy chỉnh border nếu muốn
                 ),
-                child: Text(
-                  // Hiển thị tiêu đề của voucher nếu có
-                  selectedVoucher != null
-                      ? "Voucher: ${selectedVoucher!.title} - ${selectedVoucher!.discount}%"
-                      : "Apply Voucher",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black, // Màu chữ đen
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/vouvher.svg',
+                      width: 40.w,
+                      height: 40.h,
+                    ),
+                    const SizedBox(width: 15),
+                    Text(
+                      // Hiển thị tiêu đề của voucher nếu có
+                      selectedVoucher != null
+                          ? "Voucher: ${selectedVoucher!.title} - ${selectedVoucher!.discount}% >"
+                          : "Apply Voucher >",
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.black, // Màu chữ đen
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

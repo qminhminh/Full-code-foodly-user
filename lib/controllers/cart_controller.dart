@@ -161,6 +161,43 @@ class CartController extends GetxController {
     }
   }
 
+  void removeFromCartCheckout(String productId) async {
+    String token = box.read('token');
+    String accessToken = jsonDecode(token);
+
+    setLoading = true;
+    var url = Uri.parse('${Environment.appBaseUrl}/api/cart/delete/$productId');
+
+    try {
+      var response = await http.delete(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken'
+      });
+
+      if (response.statusCode == 200) {
+        setLoading = false;
+        CartResponse data = cartResponseFromJson(response.body);
+
+        box.write("cart", jsonEncode(data.count));
+
+        Get.offAll(() => MainScreen());
+      } else {
+        // var data = apiErrorFromJson(response.body);
+      }
+    } catch (e) {
+      setLoading = false;
+      Get.snackbar(
+        e.toString(),
+        "Failed to remove the item, please try again",
+        colorText: kLightWhite,
+        backgroundColor: kRed,
+        icon: const Icon(Icons.error),
+      );
+    } finally {
+      setLoading = false;
+    }
+  }
+
   void updateCountToCart(String cartId, String userId, String productId,
       var quantity, var totalPrice) async {
     String token = box.read('token');
@@ -189,7 +226,6 @@ class CartController extends GetxController {
       if (response.statusCode == 200) {
         setLoading = false;
       } else {
-        var data = apiErrorFromJson(response.body);
         Get.snackbar(
           "Error",
 
@@ -232,7 +268,6 @@ class CartController extends GetxController {
 
       if (response.statusCode == 200) {
         setLoading = false;
-        final data = jsonDecode(response.body);
       } else {
         var data = apiErrorFromJson(response.body);
         Get.snackbar(
@@ -277,7 +312,6 @@ class CartController extends GetxController {
 
       if (response.statusCode == 200) {
         setLoading = false;
-        final data = jsonDecode(response.body);
       } else {
         var data = apiErrorFromJson(response.body);
         Get.snackbar(
@@ -299,4 +333,45 @@ class CartController extends GetxController {
       setLoading = false;
     }
   }
+
+  // Future<List<Food>> getFoodByIdUseCart(String foodId) async {
+  //   String token = box.read('token');
+  //   String accessToken = jsonDecode(token);
+
+  //   setLoading = true;
+  //   var url =
+  //       Uri.parse('${Environment.appBaseUrl}/api/foods/cart-get-food/$foodId');
+
+  //   try {
+  //     var response = await http.post(
+  //       url,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $accessToken'
+  //       },
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       setLoading = false;
+  //     } else {
+  //       var data = apiErrorFromJson(response.body);
+  //       Get.snackbar(
+  //         "Error",
+  //         data.message, // Thêm "Error" cho rõ ràng
+  //         // Thêm "Error" cho rõ ràng
+  //         colorText: kLightWhite,
+  //         backgroundColor: kRed,
+  //         icon: const Icon(Icons.error),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     setLoading = false;
+  //     Get.snackbar(e.toString(), "Failed, please try again",
+  //         colorText: kLightWhite,
+  //         backgroundColor: kRed,
+  //         icon: const Icon(Icons.error));
+  //   } finally {
+  //     setLoading = false;
+  //   }
+  // }
 }

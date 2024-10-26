@@ -15,6 +15,7 @@ import 'package:foodly_user/hooks/fetchVouchers.dart';
 import 'package:foodly_user/models/user_cart.dart';
 import 'package:foodly_user/models/vouchers.dart';
 import 'package:foodly_user/views/food/widgets/empty_page.dart';
+import 'package:foodly_user/views/orders/orders_cart_page.dart';
 import 'package:get/get.dart';
 
 class CartTile extends HookWidget {
@@ -162,7 +163,7 @@ class CartTile extends HookWidget {
                                       vertical: 2,
                                     ),
                                     decoration: const BoxDecoration(
-                                      color: Colors.grey,
+                                      color: kSecondaryLight,
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(8)),
                                     ),
@@ -330,7 +331,26 @@ class CartTile extends HookWidget {
                     ),
                     // Set the desired width
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    //selectedProducts
+                    if (selectedProducts == null) {
+                      Get.snackbar(
+                        "Notice choose product",
+                        "Failed, please choose product",
+                        colorText: kLightWhite,
+                        backgroundColor: kRed,
+                        icon: const Icon(Icons.error),
+                      );
+                    } else {
+                      Get.to(
+                          () => CheckoutPage(
+                                selectedProducts: selectedProducts.value,
+                                userCart: item,
+                              ),
+                          transition: Transition.fade,
+                          duration: const Duration(seconds: 1));
+                    }
+                  },
                   child: const Text(
                     "Proceed to Checkout",
                     style: TextStyle(color: Colors.white),
