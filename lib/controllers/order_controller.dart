@@ -54,6 +54,12 @@ class OrderController extends GetxController {
     _iconChanger.value = newValue;
   }
 
+  RxList<String> listIdCart = <String>[].obs;
+
+  void addIdCart(String id) {
+    listIdCart.add(id);
+  }
+
   void createOrder(String order, Order item) async {
     String token = box.read('token');
     String accessToken = jsonDecode(token);

@@ -161,34 +161,44 @@ class CartController extends GetxController {
     }
   }
 
-  void removeFromCartCheckout(String productId) async {
-    String token = box.read('token');
+  void removeFromCartCheckout(List<String> productIds) async {
+    String? token = box.read('token');
+    if (token == null) {
+      Get.snackbar("Error", "User token is missing. Please login again.",
+          colorText: kLightWhite, backgroundColor: kRed);
+      return;
+    }
     String accessToken = jsonDecode(token);
 
     setLoading = true;
-    var url = Uri.parse('${Environment.appBaseUrl}/api/cart/delete/$productId');
 
     try {
-      var response = await http.delete(url, headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $accessToken'
-      });
+      // Thực hiện xoá từng sản phẩm trong vòng lặp nếu không hỗ trợ xóa hàng loạt
+      for (var productId in productIds) {
+        var url =
+            Uri.parse('${Environment.appBaseUrl}/api/cart/delete/$productId');
 
-      if (response.statusCode == 200) {
-        setLoading = false;
-        CartResponse data = cartResponseFromJson(response.body);
+        var response = await http.delete(url, headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        });
 
-        box.write("cart", jsonEncode(data.count));
-
-        Get.offAll(() => MainScreen());
-      } else {
-        // var data = apiErrorFromJson(response.body);
+        if (response.statusCode == 200) {
+          // Cập nhật số lượng sản phẩm còn lại trong giỏ hàng
+          CartResponse data = cartResponseFromJson(response.body);
+          box.write("cart", jsonEncode(data.count));
+        } else {
+          Get.snackbar("Error", "Failed to remove item with ID $productId",
+              colorText: kLightWhite, backgroundColor: kRed);
+        }
       }
+
+      // Chuyển hướng sau khi tất cả yêu cầu xóa hoàn tất
+      Get.offAll(() => MainScreen());
     } catch (e) {
-      setLoading = false;
       Get.snackbar(
-        e.toString(),
-        "Failed to remove the item, please try again",
+        "Error",
+        "Failed to remove the items, please try again",
         colorText: kLightWhite,
         backgroundColor: kRed,
         icon: const Icon(Icons.error),

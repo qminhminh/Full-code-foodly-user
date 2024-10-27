@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, prefer_final_fields
+// ignore_for_file: unused_local_variable, prefer_final_fields, unnecessary_string_interpolations
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +26,12 @@ class CheckoutPage extends HookWidget {
     super.key,
     required this.selectedProducts,
     required this.userCart,
+    required this.totalPrice,
   });
 
   final List<UserCart> selectedProducts;
   final UserCart userCart;
+  final double totalPrice;
 
   TextEditingController _phone = TextEditingController();
 
@@ -40,8 +42,9 @@ class CheckoutPage extends HookWidget {
     final controller = Get.put(CartController());
     final hookResult = useFetchDefault(context, false);
 
-    double totalPrice =
-        selectedProducts.fold(0, (sum, item) => sum + item.totalPrice);
+    // double totalPrice =
+    //     selectedProducts.fold(0, (sum, item) => sum + item.totalPrice);
+
     double deliveryFee = 2.0; // Giả định phí giao hàng là 2.0
     double grandTotal = totalPrice + deliveryFee;
 
@@ -97,10 +100,15 @@ class CheckoutPage extends HookWidget {
                       padding: EdgeInsets.all(12.w),
                       margin: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 0),
                       decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.r)),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
                       child: Column(
                         children: [
+                          RowText(
+                              first: "Voucher",
+                              second:
+                                  "${controller.selectedVoucher.value != null ? "${controller.selectedVoucher.value!.title} - ${controller.selectedVoucher.value!.discount}%" : "NO Apply Voucher"}"),
                           RowText(
                               first: "Total Price",
                               second: "\$ ${totalPrice.toStringAsFixed(2)}"),
@@ -187,10 +195,9 @@ class CheckoutPage extends HookWidget {
 
                               // // Xóa các sản phẩm đã thanh toán nếu thanh toán thành công
 
-                              // for (var product in selectedProducts) {
-                              //   controller.removeFromCartCheckout(
-                              //       product.productId.id);
-                              // }
+                              for (var product in selectedProducts) {
+                                orderController.listIdCart.add(product.id);
+                              }
                             },
                             radius: 9,
                             color: kPrimary,

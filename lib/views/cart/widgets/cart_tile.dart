@@ -283,7 +283,7 @@ class CartTile extends HookWidget {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: selectedVoucher != null ? kPrimary : Colors.white,
+                  color: selectedVoucher != null ? Colors.white : Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
@@ -346,6 +346,7 @@ class CartTile extends HookWidget {
                           () => CheckoutPage(
                                 selectedProducts: selectedProducts.value,
                                 userCart: item,
+                                totalPrice: totalPrice.value,
                               ),
                           transition: Transition.fade,
                           duration: const Duration(seconds: 1));
