@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:foodly_user/models/api_error.dart';
 import 'package:foodly_user/models/cart_response.dart';
 import 'package:foodly_user/models/environment.dart';
+import 'package:foodly_user/models/user_cart.dart';
 import 'package:foodly_user/models/vouchers.dart';
 import 'package:foodly_user/views/entrypoint.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,12 @@ import '../constants/constants.dart';
 
 class CartController extends GetxController {
   final box = GetStorage();
+
+  var total = 0.0.obs;
+
+  setTotal(double value) {
+    total.value = value;
+  }
 
   // Reactive state
   var _address = false.obs;
@@ -40,6 +47,23 @@ class CartController extends GetxController {
   // Method to update the selected voucher
   void updateSelectedVoucher(Voucher? voucher) {
     selectedVoucher.value = voucher;
+  }
+
+  var selectedProducts = <UserCart>[].obs;
+
+  // Thêm sản phẩm vào selectedProducts
+  void addProduct(UserCart product) {
+    selectedProducts.add(product);
+  }
+
+  // Xóa sản phẩm khỏi selectedProducts
+  void removeProduct(UserCart product) {
+    selectedProducts.remove(product);
+  }
+
+  // Xóa toàn bộ sản phẩm trong selectedProducts
+  void clearSelectedProducts() {
+    selectedProducts.clear();
   }
 
   void addToCart(String item) async {

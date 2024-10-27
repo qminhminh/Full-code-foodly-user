@@ -1,3 +1,5 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:foodly_user/common/custom_appbar.dart';
@@ -6,6 +8,7 @@ import 'package:foodly_user/common/heading.dart';
 import 'package:foodly_user/constants/constants.dart';
 import 'package:foodly_user/controllers/catergory_controller.dart';
 import 'package:foodly_user/views/home/all_nearby_restaurants.dart';
+import 'package:foodly_user/views/home/chat_page.dart';
 import 'package:foodly_user/views/home/fastest_foods_page.dart';
 import 'package:foodly_user/views/home/recommendations.dart';
 import 'package:foodly_user/views/home/widgets/categories_list.dart';
@@ -78,6 +81,18 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+      floatingActionButton: Container(
+        margin: const EdgeInsets.only(bottom: 60.0),
+        child: FloatingActionButton(
+          focusColor: kPrimary,
+          hoverColor: kPrimary,
+          onPressed: () {
+            Get.to(() => const ChatWithRetaurant());
+          },
+          child: const Icon(Icons.chat_bubble),
+          backgroundColor: kPrimary,
         ),
       ),
     );

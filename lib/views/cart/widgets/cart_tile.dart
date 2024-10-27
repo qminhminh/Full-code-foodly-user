@@ -15,7 +15,6 @@ import 'package:foodly_user/hooks/fetchVouchers.dart';
 import 'package:foodly_user/models/user_cart.dart';
 import 'package:foodly_user/models/vouchers.dart';
 import 'package:foodly_user/views/food/widgets/empty_page.dart';
-import 'package:foodly_user/views/orders/orders_cart_page.dart';
 import 'package:get/get.dart';
 
 class CartTile extends HookWidget {
@@ -29,6 +28,7 @@ class CartTile extends HookWidget {
     final controller = Get.put(CartController());
     final counterController = Get.put(CounterCartController());
     final cartController = Get.put(CartController());
+
     Voucher? selectedVoucher;
 
     // State to manage the selected products and total price
@@ -55,6 +55,7 @@ class CartTile extends HookWidget {
       }
 
       totalPrice.value = sum; // Update the total price
+      cartController.total(sum);
     }
 
     return Container(
@@ -110,8 +111,11 @@ class CartTile extends HookWidget {
                               onChanged: (bool? value) {
                                 if (value == true) {
                                   selectedProducts.value.add(product);
+                                  cartController.selectedProducts.add(product);
                                 } else {
                                   selectedProducts.value.remove(product);
+                                  cartController.selectedProducts
+                                      .remove(product);
                                 }
                                 updateTotalPrice(); // Update total price when selection changes
                               },
@@ -309,57 +313,6 @@ class CartTile extends HookWidget {
           // Add some space below the voucher button
           // Total Price Display
           const Divider(),
-
-          Container(
-            color: Colors.white,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    'Total Price: \$${totalPrice.value.toStringAsFixed(2)}',
-                    style: appStyle(14.sp, Colors.black, FontWeight.bold),
-                  ),
-                ),
-                SizedBox(width: 50.w),
-                // Apply Total Button
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kPrimary,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                    // Set the desired width
-                  ),
-                  onPressed: () {
-                    //selectedProducts
-                    if (selectedProducts == null) {
-                      Get.snackbar(
-                        "Notice choose product",
-                        "Failed, please choose product",
-                        colorText: kLightWhite,
-                        backgroundColor: kRed,
-                        icon: const Icon(Icons.error),
-                      );
-                    } else {
-                      Get.to(
-                          () => CheckoutPage(
-                                selectedProducts: selectedProducts.value,
-                                userCart: item,
-                                totalPrice: totalPrice.value,
-                              ),
-                          transition: Transition.fade,
-                          duration: const Duration(seconds: 1));
-                    }
-                  },
-                  child: const Text(
-                    "Proceed to Checkout",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );

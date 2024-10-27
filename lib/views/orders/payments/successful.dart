@@ -33,6 +33,7 @@ class Successful extends StatelessWidget {
                 onTap: () {
                   cartController
                       .removeFromCartCheckout(orderController.listIdCart);
+                  cartController.selectedProducts.clear();
                   Get.offAll(() => MainScreen());
                 },
                 child: const Icon(

@@ -25,12 +25,12 @@ class CheckoutPage extends HookWidget {
   CheckoutPage({
     super.key,
     required this.selectedProducts,
-    required this.userCart,
+    // required this.userCart,
     required this.totalPrice,
   });
 
   final List<UserCart> selectedProducts;
-  final UserCart userCart;
+  //final UserCart userCart;
   final double totalPrice;
 
   TextEditingController _phone = TextEditingController();
