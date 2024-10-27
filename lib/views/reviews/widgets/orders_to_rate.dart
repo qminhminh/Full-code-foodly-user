@@ -37,7 +37,8 @@ class RateOrders extends HookWidget {
                   order: order,
                   isRating: true,
                 );
-              }),
+              },
+            ),
     );
   }
 }

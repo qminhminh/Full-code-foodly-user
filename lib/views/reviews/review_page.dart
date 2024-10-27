@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -11,6 +12,7 @@ import 'package:foodly_user/hooks/fetchRating.dart';
 import 'package:foodly_user/models/client_orders.dart';
 import 'package:foodly_user/models/rating_response.dart';
 import 'package:foodly_user/models/sucess_model.dart';
+import 'package:foodly_user/views/auth/widgets/email_textfield.dart';
 import 'package:foodly_user/views/home/widgets/custom_btn.dart';
 import 'package:foodly_user/views/search/seach_page.dart';
 import 'package:get/get.dart';
@@ -35,6 +37,8 @@ class ReviewPage extends HookWidget {
 
     final controller = Get.put(RatingController());
     controller.rating = 3;
+    final TextEditingController _commentcontroller = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -44,9 +48,10 @@ class ReviewPage extends HookWidget {
             style: appStyle(12, kGray, FontWeight.w600)),
       ),
       body: BackGroundContainer(
-          child: isLoading || isFoodLoading
-              ? const LoadingWidget()
-              : Padding(
+        child: isLoading || isFoodLoading
+            ? const LoadingWidget()
+            : SingleChildScrollView(
+                child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -55,6 +60,9 @@ class ReviewPage extends HookWidget {
                       restaurantExistence!.status == false
                           ? Column(
                               children: [
+                                SizedBox(
+                                  height: 30.h,
+                                ),
                                 ReusableText(
                                     text:
                                         "Tap the stars to rate the restaurant and submit",
@@ -88,7 +96,8 @@ class ReviewPage extends HookWidget {
                                       Rating data = Rating(
                                           ratingType: "Restaurant",
                                           product: order.restaurantId,
-                                          rating: controller.rating.toInt());
+                                          rating: controller.rating.toInt(),
+                                          comment: '');
 
                                       String rating = ratingToJson(data);
 
@@ -108,6 +117,33 @@ class ReviewPage extends HookWidget {
                       foodExistence!.status == false
                           ? Column(
                               children: [
+                                SizedBox(
+                                  height: 20.h,
+                                ),
+                                ReusableText(
+                                    text: "Comment for food",
+                                    style:
+                                        appStyle(12, kGray, FontWeight.w600)),
+                                SizedBox(
+                                  height: 20.h,
+                                ),
+                                EmailTextField(
+                                  focusNode: FocusNode(),
+                                  hintText: "Comment",
+                                  controller: _commentcontroller,
+                                  prefixIcon: Icon(
+                                    CupertinoIcons.chat_bubble,
+                                    color: Theme.of(context).dividerColor,
+                                    size: 20.h,
+                                  ),
+                                  keyboardType: TextInputType.text,
+                                  onEditingComplete: () =>
+                                      FocusScope.of(context)
+                                          .requestFocus(FocusNode()),
+                                ),
+                                SizedBox(
+                                  height: 20.h,
+                                ),
                                 SizedBox(
                                   height: 20.h,
                                 ),
@@ -142,11 +178,11 @@ class ReviewPage extends HookWidget {
                                 CustomButton(
                                     onTap: () {
                                       Rating data = Rating(
-                                          ratingType: "Food",
-                                          product:
-                                              order.orderItems[0].foodId.id,
-                                          rating:
-                                              controller.foodRating.toInt());
+                                        ratingType: "Food",
+                                        product: order.orderItems[0].foodId.id,
+                                        rating: controller.foodRating.toInt(),
+                                        comment: _commentcontroller.text,
+                                      );
 
                                       String rating = ratingToJson(data);
 
@@ -165,7 +201,9 @@ class ReviewPage extends HookWidget {
                           : const AlreadyRated(type: "food")
                     ],
                   ),
-                )),
+                ),
+              ),
+      ),
     );
   }
 }

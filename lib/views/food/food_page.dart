@@ -1,8 +1,9 @@
-// ignore_for_file: non_constant_identifier_names, unused_import, library_private_types_in_public_api, unrelated_type_equality_checks
+// ignore_for_file: non_constant_identifier_names, unused_import, library_private_types_in_public_api, unrelated_type_equality_checks, prefer_const_constructors_in_immutables, use_key_in_widget_constructors
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -68,6 +69,7 @@ class _FoodPageState extends State<FoodPage> {
     foodController.loadAdditives(widget.food.additives);
     final hookResult = useFetchRestaurant(widget.food.restaurant);
     final restaurantData = hookResult.data;
+    foodController.getAllReviews(widget.food.id);
 
     String? token = box.read('token');
     return Scaffold(
@@ -506,6 +508,45 @@ class _FoodPageState extends State<FoodPage> {
               ),
             ),
           ),
+          const SizedBox(
+            height: 10,
+          ),
+          const Divider(),
+          Obx(
+            () => Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Product Reviews',
+                          style: appStyle(18, Colors.black, FontWeight.w600)),
+                      GestureDetector(
+                        child: const Icon(Icons.arrow_drop_down,
+                            color: Colors.blue),
+                        onTap: () async {
+                          await foodController.getAllReviews(widget.food.id);
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  foodController.reviews.isEmpty
+                      ? const Center(child: Text("No reviews available"))
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: foodController.reviews.length,
+                          itemBuilder: (context, index) {
+                            final review = foodController.reviews[index];
+                            return ReviewTile(review: review);
+                          },
+                        ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -693,6 +734,61 @@ class VoucherList extends HookWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class ReviewTile extends StatelessWidget {
+  final Map<String, dynamic> review;
+
+  ReviewTile({required this.review});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Ảnh đại diện của người dùng
+            CircleAvatar(
+              radius: 20,
+              backgroundImage: NetworkImage(
+                  review['userImageUrl'] ?? 'https://via.placeholder.com/150'),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "User: ${'Anonymous'}",
+                    style: appStyle(12, Colors.black, FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  RatingBarIndicator(
+                    rating: double.parse(review['rating'].toString()),
+                    itemBuilder: (context, index) => const Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    itemCount: 5,
+                    itemSize: 20.0,
+                    direction: Axis.horizontal,
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    review['comment'] ?? "No comment",
+                    style: appStyle(10, Colors.black, FontWeight.normal),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

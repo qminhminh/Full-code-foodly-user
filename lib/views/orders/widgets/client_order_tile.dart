@@ -26,10 +26,11 @@ class ClientOrderTile extends StatelessWidget {
         isRating == true
             ? Get.to(
                 () => ReviewPage(
-                      order: order,
-                    ),
+                  order: order,
+                ),
                 transition: Transition.native,
-                duration: const Duration(seconds: 1))
+                duration: const Duration(seconds: 1),
+              )
             : () {};
       },
       child: Stack(
@@ -40,8 +41,9 @@ class ClientOrderTile extends StatelessWidget {
             height: 80,
             width: width,
             decoration: const BoxDecoration(
-                color: kOffWhite,
-                borderRadius: BorderRadius.all(Radius.circular(9))),
+              color: kOffWhite,
+              borderRadius: BorderRadius.all(Radius.circular(9)),
+            ),
             child: Container(
               padding: const EdgeInsets.all(4),
               child: Row(
@@ -59,24 +61,24 @@ class ClientOrderTile extends StatelessWidget {
                               fit: BoxFit.cover,
                             )),
                         Positioned(
-                            bottom: 0,
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.only(left: 6, bottom: 2),
-                              color: kGray.withOpacity(0.6),
-                              height: 16,
-                              width: width,
-                              child: RatingBarIndicator(
-                                rating: 5,
-                                itemBuilder: (context, index) => const Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                ),
-                                itemCount: 5,
-                                itemSize: 15.0,
-                                direction: Axis.horizontal,
+                          bottom: 0,
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 6, bottom: 2),
+                            color: kGray.withOpacity(0.6),
+                            height: 16,
+                            width: width,
+                            child: RatingBarIndicator(
+                              rating: 5,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
                               ),
-                            ))
+                              itemCount: 5,
+                              itemSize: 15.0,
+                              direction: Axis.horizontal,
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -112,16 +114,18 @@ class ClientOrderTile extends StatelessWidget {
                               return Container(
                                 margin: const EdgeInsets.only(right: 5),
                                 decoration: const BoxDecoration(
-                                    color: kSecondaryLight,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(9))),
+                                  color: kSecondaryLight,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(9)),
+                                ),
                                 child: Center(
                                   child: Padding(
                                     padding: const EdgeInsets.all(2.0),
                                     child: ReusableText(
-                                        text: addittives,
-                                        style: appStyle(
-                                            8, kGray, FontWeight.w400)),
+                                      text: addittives,
+                                      style:
+                                          appStyle(8, kGray, FontWeight.w400),
+                                    ),
                                   ),
                                 ),
                               );
@@ -153,25 +157,27 @@ class ClientOrderTile extends StatelessWidget {
             ),
           ),
           Positioned(
-              right: 70.h,
-              top: 6.h,
-              child: Container(
-                width: 19.h,
-                height: 19.h,
-                decoration: const BoxDecoration(
-                    color: kSecondary,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: const Center(
-                    child: Icon(
-                      MaterialCommunityIcons.cart_plus,
-                      size: 15,
-                      color: kLightWhite,
-                    ),
+            right: 70.h,
+            top: 6.h,
+            child: Container(
+              width: 19.h,
+              height: 19.h,
+              decoration: const BoxDecoration(
+                color: kSecondary,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              child: GestureDetector(
+                onTap: () {},
+                child: const Center(
+                  child: Icon(
+                    MaterialCommunityIcons.cart_plus,
+                    size: 15,
+                    color: kLightWhite,
                   ),
                 ),
-              ))
+              ),
+            ),
+          )
         ],
       ),
     );

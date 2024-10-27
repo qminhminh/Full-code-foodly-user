@@ -199,65 +199,79 @@ class _DirectionsPageState extends State<DirectionsPage> {
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.r),
                         topRight: Radius.circular(20.r))),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ReusableText(
-                            text: widget.restaurant.title,
-                            style: appStyle(20, kGray, FontWeight.bold)),
-                        CircleAvatar(
-                          radius: 18,
-                          backgroundColor: kTertiary,
-                          backgroundImage:
-                              NetworkImage(widget.restaurant.imageUrl),
-                        ),
-                      ],
-                    ),
-                    const Divida(),
-                    RowText(
-                        first: "Distance To Restaurant",
-                        second:
-                            "${distanceTime.distance.toStringAsFixed(3)} km"),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    RowText(
-                        first: "Price From Current Location",
-                        second: "\$ ${distanceTime.price.toStringAsFixed(3)}"),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    RowText(
-                        first: "Estimated Delivery Time",
-                        second: "${totalTime.toStringAsFixed(0)} mins"),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    RowText(
-                        first: "Business Hours",
-                        second: widget.restaurant.time),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    const Divida(),
-                    RowText(
-                        first: "Address",
-                        second: widget.restaurant.coords.address),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    const CustomButton(
-                      color: kPrimary,
-                      btnHieght: 35,
-                      radius: 6,
-                      text: "Make a reservation",
-                    )
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ReusableText(
+                              text: widget.restaurant.title,
+                              style: appStyle(20, kGray, FontWeight.bold)),
+                          CircleAvatar(
+                            radius: 18,
+                            backgroundColor: kTertiary,
+                            backgroundImage:
+                                NetworkImage(widget.restaurant.imageUrl),
+                          ),
+                        ],
+                      ),
+                      const Divida(),
+                      RowText(
+                          first: "Distance To Restaurant",
+                          second:
+                              "${distanceTime.distance.toStringAsFixed(3)} km"),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      RowText(
+                          first: "Price From Current Location",
+                          second:
+                              "\$ ${distanceTime.price.toStringAsFixed(3)}"),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      RowText(
+                          first: "Estimated Delivery Time",
+                          second: "${totalTime.toStringAsFixed(0)} mins"),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      RowText(
+                          first: "Business Hours",
+                          second: widget.restaurant.time),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      const Divida(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ReusableText(
+                              text: "Address:   ",
+                              style: appStyle(10, kGray, FontWeight.w500)),
+                          Flexible(
+                              child: Text(widget.restaurant.coords.address,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: appStyle(10, kGray, FontWeight.w400)))
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      const CustomButton(
+                        color: kPrimary,
+                        btnHieght: 35,
+                        radius: 6,
+                        text: "Make a reservation",
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

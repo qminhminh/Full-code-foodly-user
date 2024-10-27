@@ -76,9 +76,11 @@ class RatingPage extends HookWidget {
                         CustomButton(
                             onTap: () {
                               Rating data = Rating(
-                                  ratingType: "Restaurant",
-                                  product: restaurant.id,
-                                  rating: controller.rating.toInt());
+                                ratingType: "Restaurant",
+                                product: restaurant.id,
+                                rating: controller.rating.toInt(),
+                                comment: " ",
+                              );
 
                               String rating = ratingToJson(data);
 
@@ -122,9 +124,11 @@ class RatingPage extends HookWidget {
                         CustomButton(
                             onTap: () {
                               Rating data = Rating(
-                                  ratingType: "Restaurant",
-                                  product: restaurant.id,
-                                  rating: controller.rating.toInt());
+                                ratingType: "Restaurant",
+                                product: restaurant.id,
+                                rating: controller.rating.toInt(),
+                                comment: " ",
+                              );
 
                               String rating = ratingToJson(data);
 

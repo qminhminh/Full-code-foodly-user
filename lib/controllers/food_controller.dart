@@ -1,12 +1,19 @@
+// ignore_for_file: avoid_print
+
+import 'dart:convert';
+
+import 'package:foodly_user/models/environment.dart';
 import 'package:foodly_user/models/foods.dart';
 import 'package:foodly_user/models/obs_additives.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class FoodController extends GetxController {
   var additivesList = <ObsAdditive>[].obs;
   final RxDouble _totalPrice = 0.0.obs;
   bool initialCheckedValue = false;
   List<String> ads = [];
+  var reviews = [].obs;
 
   var currentPage = 0.obs;
 
@@ -59,5 +66,23 @@ class FoodController extends GetxController {
   // Setter to set the value
   set setAdditveTotal(double newValue) {
     _totalPrice.value = newValue;
+  }
+
+  Future<void> getAllReviews(String productId) async {
+    try {
+      final response = await http.get(Uri.parse(
+          '${Environment.appBaseUrl}/api/rating/get-all-review/$productId'));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['status'] == true) {
+          reviews.value = data['reviews'];
+        }
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

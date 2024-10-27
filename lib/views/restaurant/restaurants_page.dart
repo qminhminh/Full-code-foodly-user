@@ -57,113 +57,113 @@ class _RestaurantPageState extends State<RestaurantPage>
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-          backgroundColor: kLightWhite,
-          body: ListView(
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              Stack(
+        backgroundColor: kLightWhite,
+        body: ListView(
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            Stack(
+              children: [
+                SizedBox(
+                  height: 230.h,
+                  width: width,
+                  child: CachedNetworkImage(
+                      fit: BoxFit.cover, imageUrl: widget.restaurant.imageUrl),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  child: RestaurantTopBar(
+                    title: widget.restaurant.title,
+                    restaurant: widget.restaurant,
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              height: 80.h,
+              child: ListView(
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   SizedBox(
-                    height: 230.h,
-                    width: width,
-                    child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        imageUrl: widget.restaurant.imageUrl),
+                    height: 10.h,
                   ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    child: RestaurantTopBar(
-                      title: widget.restaurant.title,
-                      restaurant: widget.restaurant,
-                    ),
+                  RowText(
+                      first: "Distance To Restaurant",
+                      second: "${distanceTime.distance.toStringAsFixed(3)} km"),
+                  SizedBox(
+                    height: 10.h,
                   ),
+                  RowText(
+                      first: "Delivery Price From Current Location",
+                      second: "\$ ${distanceTime.price.toStringAsFixed(3)}"),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  RowText(
+                      first: "Estimated Delivery Time to Current Location",
+                      second: "${totalTime.toStringAsFixed(0)} mins")
                 ],
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w),
-                height: 80.h,
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    SizedBox(
-                      height: 10.h,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+              child: Divida(),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
+              child: SizedBox(
+                height: 25.h,
+                width: MediaQuery.of(context).size.width,
+                child: TabBar(
+                  controller: _tabController,
+                  indicator: BoxDecoration(
+                    color: kPrimary,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  labelPadding: EdgeInsets.zero,
+                  labelColor: Colors.white,
+                  dividerColor: Colors.transparent,
+                  labelStyle: appStyle(12, kLightWhite, FontWeight.normal),
+                  unselectedLabelColor: Colors.grey.withOpacity(0.7),
+                  tabs: <Widget>[
+                    Tab(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 2,
+                        //margin: EdgeInsets.only(left: 20, right: 20),
+                        height: 25,
+                        child: const Center(child: Text("Menu")),
+                      ),
                     ),
-                    RowText(
-                        first: "Distance To Restaurant",
-                        second:
-                            "${distanceTime.distance.toStringAsFixed(3)} km"),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    RowText(
-                        first: "Delivery Price From Current Location",
-                        second: "\$ ${distanceTime.price.toStringAsFixed(3)}"),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    RowText(
-                        first: "Estimated Delivery Time to Current Location",
-                        second: "${totalTime.toStringAsFixed(0)} mins")
+                    Tab(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 2,
+                        height: 25,
+                        child: const Center(child: Text("Explore")),
+                      ),
+                    )
                   ],
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-                child: Divida(),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                child: SizedBox(
-                  height: 25.h,
-                  width: MediaQuery.of(context).size.width,
-                  child: TabBar(
-                    controller: _tabController,
-                    indicator: BoxDecoration(
-                      color: kPrimary,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    labelPadding: EdgeInsets.zero,
-                    labelColor: Colors.white,
-                    dividerColor: Colors.transparent,
-                    labelStyle: appStyle(12, kLightWhite, FontWeight.normal),
-                    unselectedLabelColor: Colors.grey.withOpacity(0.7),
-                    tabs: <Widget>[
-                      Tab(
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
-                          //margin: EdgeInsets.only(left: 20, right: 20),
-                          height: 25,
-                          child: const Center(child: Text("Menu")),
-                        ),
-                      ),
-                      Tab(
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
-                          height: 25,
-                          child: const Center(child: Text("Explore")),
-                        ),
-                      )
-                    ],
-                  ),
-                ).asGlass(
-                    tintColor: kPrimary,
-                    clipBorderRadius: BorderRadius.circular(19.0),
-                    blurX: 8,
-                    blurY: 8),
-              ),
-              SizedBox(
-                  height: hieght / 1.3,
-                  child: TabBarView(controller: _tabController, children: [
-                    RestaurantMenu(
-                      restaurantId: widget.restaurant.id,
-                    ),
-                    const Explore()
-                  ]))
-            ],
-          )),
+              ).asGlass(
+                  tintColor: kPrimary,
+                  clipBorderRadius: BorderRadius.circular(19.0),
+                  blurX: 8,
+                  blurY: 8),
+            ),
+            SizedBox(
+              height: hieght / 1.3,
+              child: TabBarView(controller: _tabController, children: [
+                RestaurantMenu(
+                  restaurantId: widget.restaurant.id,
+                ),
+                const Explore()
+              ]),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
