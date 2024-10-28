@@ -72,6 +72,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   cross_connectivity: ^3.2.0
   flutter_polyline_points: ^2.0.0
+  socket_io_client: ^3.0.0
 
 dev_dependencies:
   flutter_test:

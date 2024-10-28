@@ -8,6 +8,8 @@ import 'package:foodly_user/common/app_style.dart';
 import 'package:foodly_user/common/reusable_text.dart';
 import 'package:foodly_user/constants/constants.dart';
 import 'package:foodly_user/models/restaurants.dart';
+import 'package:foodly_user/views/home/widgets/chat_restaurant.dart';
+import 'package:get/get.dart';
 
 class ChatTile extends StatelessWidget {
   const ChatTile({
@@ -20,7 +22,13 @@ class ChatTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Get.to(
+          () => ChatRestaurant(restaurant: restaurant),
+          duration: const Duration(milliseconds: 300),
+          transition: Transition.fadeIn,
+        );
+      },
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
