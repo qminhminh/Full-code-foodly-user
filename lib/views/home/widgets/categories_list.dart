@@ -70,8 +70,11 @@ class CategoriesWidget extends HookWidget {
                                 child: CachedNetworkImage(
                                   imageUrl: category.imageUrl,
                                   fit: BoxFit.fitWidth,
-                                  placeholder: (context, url) =>
-                                      const CircularProgressIndicator(),
+                                  placeholder: (context, url) => Container(
+                                    width: 35,
+                                    height: 35,
+                                    color: Colors.grey.shade200,
+                                  ),
                                   errorWidget: (context, url, error) =>
                                       const Icon(Icons.error),
                                 ),

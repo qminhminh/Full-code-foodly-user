@@ -54,27 +54,35 @@ class RestaurantTile extends StatelessWidget {
                             width: 70.w,
                             child: Image.network(
                               restaurant.imageUrl,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Center(
+                                  child: Icon(
+                                    Icons.error,
+                                    color: kPrimary,
+                                  ),
+                                );
+                              },
                               fit: BoxFit.cover,
                             )),
                         Positioned(
-                            bottom: 0,
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.only(left: 6, bottom: 2),
-                              color: kGray.withOpacity(0.6),
-                              height: 16,
-                              width: width,
-                              child: RatingBarIndicator(
-                                rating: 5,
-                                itemBuilder: (context, index) => const Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                ),
-                                itemCount: 5,
-                                itemSize: 15.0,
-                                direction: Axis.horizontal,
+                          bottom: 0,
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 6, bottom: 2),
+                            color: kGray.withOpacity(0.6),
+                            height: 16,
+                            width: width,
+                            child: RatingBarIndicator(
+                              rating: 5,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
                               ),
-                            ))
+                              itemCount: 5,
+                              itemSize: 15.0,
+                              direction: Axis.horizontal,
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -138,25 +146,27 @@ class RestaurantTile extends StatelessWidget {
             ),
           ),
           Positioned(
-              right: 70.h,
-              top: 6.h,
-              child: Container(
-                width: 19.h,
-                height: 19.h,
-                decoration: const BoxDecoration(
-                    color: kSecondary,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: const Center(
-                    child: Icon(
-                      MaterialCommunityIcons.shopping_outline,
-                      size: 15,
-                      color: kLightWhite,
-                    ),
+            right: 70.h,
+            top: 6.h,
+            child: Container(
+              width: 19.h,
+              height: 19.h,
+              decoration: const BoxDecoration(
+                color: kSecondary,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              child: GestureDetector(
+                onTap: () {},
+                child: const Center(
+                  child: Icon(
+                    MaterialCommunityIcons.shopping_outline,
+                    size: 15,
+                    color: kLightWhite,
                   ),
                 ),
-              ))
+              ),
+            ),
+          )
         ],
       ),
     );

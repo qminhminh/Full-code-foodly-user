@@ -53,6 +53,13 @@ class ChatTile extends StatelessWidget {
                             width: 70.w,
                             child: Image.network(
                               restaurant.imageUrl,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Center(
+                                child: Icon(
+                                  Icons.error,
+                                  color: kPrimary,
+                                ),
+                              ),
                               fit: BoxFit.cover,
                             )),
                         Positioned(
