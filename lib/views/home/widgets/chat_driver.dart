@@ -34,7 +34,7 @@ class _ChatDriverState extends State<ChatDriver> {
   void _markMessagesAsRead() {
     // Chỉ đánh dấu tin nhắn là đã đọc nếu uid khác với id của người gửi
     if (uid != widget.driver.id && uid != socket.id) {
-      socket.emit('mark_as_read_driver', {
+      socket.emit('mark_as_read_driver_client', {
         'driverId': widget.driver.id,
         'customerId': uid,
       });
@@ -53,14 +53,14 @@ class _ChatDriverState extends State<ChatDriver> {
     socket.connect();
     socket.onConnect((_) {
       // Get.snackbar('Connection', widget.driver.id);
-      socket.emit('join_room_driver', {
+      socket.emit('join_room_driver_client', {
         'driverId': widget.driver.id,
         'customerId': uid,
       });
       _markMessagesAsRead();
     });
 
-    socket.on('receive_message_driver', (data) {
+    socket.on('receive_message_driver_client', (data) {
       setState(() {
         messages.add({
           'message': data['message'],
@@ -120,7 +120,7 @@ class _ChatDriverState extends State<ChatDriver> {
   void _sendMessage() {
     if (_messageController.text.isNotEmpty) {
       final message = _messageController.text;
-      socket.emit('send_message_driver', {
+      socket.emit('send_message_driver_client', {
         'driverId': widget.driver.id,
         'customerId': uid,
         'message': message,
@@ -161,7 +161,7 @@ class _ChatDriverState extends State<ChatDriver> {
               onPressed: () {
                 final updatedMessage = _messageController.text;
                 if (updatedMessage.isNotEmpty) {
-                  socket.emit('edit_message_driver', {
+                  socket.emit('edit_message_driver_client', {
                     'driverId': widget.driver.id,
                     'customerId': uid,
                     'messageId': messages[index]['id'],
@@ -203,7 +203,7 @@ class _ChatDriverState extends State<ChatDriver> {
           actions: [
             TextButton(
               onPressed: () {
-                socket.emit('delete_message_driver', {
+                socket.emit('delete_message_driver_client', {
                   'driverId': widget.driver.id,
                   'customerId': uid,
                   'messageId': message['id'],

@@ -31,16 +31,6 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
     _loadChatHistory();
   }
 
-  void _markMessagesAsRead() {
-    // Chỉ đánh dấu tin nhắn là đã đọc nếu uid khác với id của người gửi
-    if (uid != widget.restaurant.id && uid != socket.id) {
-      socket.emit('mark_as_read_res', {
-        'restaurantId': widget.restaurant.id,
-        'customerId': uid.replaceAll('"', ''),
-      });
-    }
-  }
-
   void _connectToServer() {
     socket = IO.io(
       'http://192.168.137.1:5000',
@@ -53,13 +43,13 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
     socket.connect();
     socket.onConnect((_) {
       //Get.snackbar('Connection', 'Connected to server');
-      socket.emit('join_room_restaurant', {
+      socket.emit('join_room_restaurant_client', {
         'restaurantId': widget.restaurant.id,
         'customerId': uid.replaceAll('"', ''),
       });
     });
 
-    socket.on('receive_message_restaurant', (data) {
+    socket.on('receive_message_res_client', (data) {
       setState(() {
         messages.add({
           'message': data['message'],
@@ -74,9 +64,6 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
           'isRead': data['isRead'] ?? 'unread',
         });
       });
-      if (data['sender'] != uid.replaceAll('"', '')) {
-        _markMessagesAsRead();
-      }
     });
 
     socket.on('message_deleted', (data) {
@@ -120,7 +107,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
   void _sendMessage() {
     if (_messageController.text.isNotEmpty) {
       final message = _messageController.text;
-      socket.emit('send_message_res', {
+      socket.emit('send_message_res_client', {
         'restaurantId': widget.restaurant.id,
         'customerId': uid.replaceAll('"', ''),
         'message': message,
@@ -161,7 +148,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
               onPressed: () {
                 final updatedMessage = _messageController.text;
                 if (updatedMessage.isNotEmpty) {
-                  socket.emit('edit_message_res', {
+                  socket.emit('edit_message_res_client', {
                     'restaurantId': widget.restaurant.id,
                     'customerId': uid.replaceAll('"', ''),
                     'messageId': messages[index]['id'],
@@ -203,7 +190,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
           actions: [
             TextButton(
               onPressed: () {
-                socket.emit('delete_message_res', {
+                socket.emit('delete_message_res_client', {
                   'restaurantId': widget.restaurant.id,
                   'customerId': uid.replaceAll('"', ''),
                   'messageId': message['id'],
