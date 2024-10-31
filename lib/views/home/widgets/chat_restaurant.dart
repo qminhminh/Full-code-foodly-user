@@ -268,26 +268,28 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
                         ? MainAxisAlignment.end
                         : MainAxisAlignment.start,
                     children: [
-                      PopupMenuButton<int>(
-                        icon: const Icon(Icons.more_vert),
-                        onSelected: (value) {
-                          if (value == 1) {
-                            _editMessage(index);
-                          } else if (value == 2) {
-                            _deleteMessage(index);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          const PopupMenuItem(
-                            value: 1,
-                            child: Text("Edit"),
-                          ),
-                          const PopupMenuItem(
-                            value: 2,
-                            child: Text("Delete"),
-                          ),
-                        ],
-                      ),
+                      isCustomer
+                          ? PopupMenuButton<int>(
+                              icon: const Icon(Icons.more_vert),
+                              onSelected: (value) {
+                                if (value == 1) {
+                                  _editMessage(index);
+                                } else if (value == 2) {
+                                  _deleteMessage(index);
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  value: 1,
+                                  child: Text("Edit"),
+                                ),
+                                const PopupMenuItem(
+                                  value: 2,
+                                  child: Text("Delete"),
+                                ),
+                              ],
+                            )
+                          : const SizedBox(),
                       Container(
                         margin: const EdgeInsets.symmetric(
                             vertical: 4.0, horizontal: 8.0),
