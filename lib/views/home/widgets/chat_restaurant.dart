@@ -259,7 +259,6 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
               itemBuilder: (context, index) {
                 final message = filteredMessages[index];
                 final isCustomer = message['sender'] == uid.replaceAll('"', '');
-                final messageStatus = message['status'];
 
                 return Align(
                   alignment:
@@ -306,16 +305,6 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
                               softWrap: true,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              messageStatus == 'read' ? 'Read' : 'Unread',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: messageStatus == 'read'
-                                    ? Colors.green
-                                    : Colors.red,
-                              ),
                             ),
                           ],
                         ),
