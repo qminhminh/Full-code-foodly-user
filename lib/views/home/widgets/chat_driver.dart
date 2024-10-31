@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:foodly_user/models/environment.dart';
-import 'package:foodly_user/models/restaurants.dart';
+import 'package:foodly_user/models/user_driver.dart';
 import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
 
-class ChatRestaurant extends StatefulWidget {
-  const ChatRestaurant({super.key, required this.restaurant});
-  final Restaurants restaurant;
+class ChatDriver extends StatefulWidget {
+  const ChatDriver({super.key, required this.driver});
+  final UserDriver driver;
 
   @override
-  State<ChatRestaurant> createState() => _ChatRestaurantState();
+  State<ChatDriver> createState() => _ChatDriverState();
 }
 
-class _ChatRestaurantState extends State<ChatRestaurant> {
+class _ChatDriverState extends State<ChatDriver> {
   final TextEditingController _messageController = TextEditingController();
   final box = GetStorage();
   late final String uid;
@@ -26,17 +26,17 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
   @override
   void initState() {
     super.initState();
-    uid = box.read("userId");
+    uid = box.read("userId").replaceAll('"', '');
     _connectToServer();
     _loadChatHistory();
   }
 
   void _markMessagesAsRead() {
     // Chỉ đánh dấu tin nhắn là đã đọc nếu uid khác với id của người gửi
-    if (uid != widget.restaurant.id && uid != socket.id) {
-      socket.emit('mark_as_read_res', {
-        'restaurantId': widget.restaurant.id,
-        'customerId': uid.replaceAll('"', ''),
+    if (uid != widget.driver.id && uid != socket.id) {
+      socket.emit('mark_as_read_driver', {
+        'driverId': widget.driver.id,
+        'customerId': uid,
       });
     }
   }
@@ -52,14 +52,15 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
 
     socket.connect();
     socket.onConnect((_) {
-      //Get.snackbar('Connection', 'Connected to server');
-      socket.emit('join_room_restaurant', {
-        'restaurantId': widget.restaurant.id,
-        'customerId': uid.replaceAll('"', ''),
+      // Get.snackbar('Connection', widget.driver.id);
+      socket.emit('join_room_driver', {
+        'driverId': widget.driver.id,
+        'customerId': uid,
       });
+      _markMessagesAsRead();
     });
 
-    socket.on('receive_message_restaurant', (data) {
+    socket.on('receive_message_driver', (data) {
       setState(() {
         messages.add({
           'message': data['message'],
@@ -74,7 +75,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
           'isRead': data['isRead'] ?? 'unread',
         });
       });
-      if (data['sender'] != uid.replaceAll('"', '')) {
+      if (data['sender'] != uid) {
         _markMessagesAsRead();
       }
     });
@@ -90,9 +91,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
 
   Future<void> _loadChatHistory() async {
     final url = Uri.parse(
-      '${Environment.appBaseUrl}/api/chats/messages/${widget.restaurant.id}/$uid'
-          .replaceAll('"', ''),
-    );
+        '${Environment.appBaseUrl}/api/chats/messages-driver/${widget.driver.id}/$uid');
 
     try {
       final response = await http.get(url);
@@ -109,6 +108,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
           }).toList();
           filteredMessages = List.from(messages);
         });
+        // _markMessagesAsRead(messages.length);
       } else {
         Get.snackbar("Error", "Failed to load chat history");
       }
@@ -120,21 +120,21 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
   void _sendMessage() {
     if (_messageController.text.isNotEmpty) {
       final message = _messageController.text;
-      socket.emit('send_message_res', {
-        'restaurantId': widget.restaurant.id,
-        'customerId': uid.replaceAll('"', ''),
+      socket.emit('send_message_driver', {
+        'driverId': widget.driver.id,
+        'customerId': uid,
         'message': message,
-        'sender': uid.replaceAll('"', ''),
+        'sender': uid,
       });
       setState(() {
         messages.add({
           'message': message,
-          'sender': uid.replaceAll('"', ''),
+          'sender': uid,
           'id': '', // Thêm trình giữ chỗ cho các tin nhắn mới
         });
         filteredMessages.add({
           'message': message,
-          'sender': uid.replaceAll('"', ''),
+          'sender': uid,
           'id': '', // Add a placeholder for new messages
         });
         _messageController.clear();
@@ -161,9 +161,9 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
               onPressed: () {
                 final updatedMessage = _messageController.text;
                 if (updatedMessage.isNotEmpty) {
-                  socket.emit('edit_message_res', {
-                    'restaurantId': widget.restaurant.id,
-                    'customerId': uid.replaceAll('"', ''),
+                  socket.emit('edit_message_driver', {
+                    'driverId': widget.driver.id,
+                    'customerId': uid,
                     'messageId': messages[index]['id'],
                     'message': updatedMessage,
                   });
@@ -203,9 +203,9 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
           actions: [
             TextButton(
               onPressed: () {
-                socket.emit('delete_message_res', {
-                  'restaurantId': widget.restaurant.id,
-                  'customerId': uid.replaceAll('"', ''),
+                socket.emit('delete_message_driver', {
+                  'driverId': widget.driver.id,
+                  'customerId': uid,
                   'messageId': message['id'],
                 });
 
@@ -245,7 +245,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          widget.restaurant.title,
+          widget.driver.username,
           style: const TextStyle(color: Colors.black),
         ),
         leading: IconButton(
@@ -271,9 +271,8 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
               itemCount: filteredMessages.length,
               itemBuilder: (context, index) {
                 final message = filteredMessages[index];
-                final isCustomer = message['sender'] == uid.replaceAll('"', '');
+                final isCustomer = message['sender'] == uid;
                 final messageStatus = message['status'];
-
                 return Align(
                   alignment:
                       isCustomer ? Alignment.centerRight : Alignment.centerLeft,

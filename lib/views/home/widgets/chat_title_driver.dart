@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: unnecessary_null_comparison, unnecessary_string_interpolations
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -7,28 +7,27 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:foodly_user/common/app_style.dart';
 import 'package:foodly_user/common/reusable_text.dart';
 import 'package:foodly_user/constants/constants.dart';
-import 'package:foodly_user/models/restaurants.dart';
-import 'package:foodly_user/views/restaurant/restaurants_page.dart';
+import 'package:foodly_user/views/home/widgets/chat_driver.dart';
 import 'package:get/get.dart';
+import '../../../models/user_driver.dart';
 
-class RestaurantTile extends StatelessWidget {
-  const RestaurantTile({
+class ChatTileDriver extends StatelessWidget {
+  const ChatTileDriver({
     super.key,
-    required this.restaurant,
+    required this.driver,
   });
 
-  final Restaurants restaurant;
+  final UserDriver driver;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Get.to(
-            () => RestaurantPage(
-                  restaurant: restaurant,
-                ),
-            transition: Transition.native,
-            duration: const Duration(seconds: 1));
+          () => ChatDriver(driver: driver),
+          duration: const Duration(milliseconds: 300),
+          transition: Transition.fadeIn,
+        );
       },
       child: Stack(
         clipBehavior: Clip.hardEdge,
@@ -38,9 +37,8 @@ class RestaurantTile extends StatelessWidget {
             height: 70,
             width: width,
             decoration: const BoxDecoration(
-              color: kOffWhite,
-              borderRadius: BorderRadius.all(Radius.circular(9)),
-            ),
+                color: kOffWhite,
+                borderRadius: BorderRadius.all(Radius.circular(9))),
             child: Container(
               padding: const EdgeInsets.all(4),
               child: Row(
@@ -54,15 +52,14 @@ class RestaurantTile extends StatelessWidget {
                           height: 70.h,
                           width: 70.w,
                           child: Image.network(
-                            restaurant.imageUrl,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Center(
-                                child: Icon(
-                                  Icons.error,
-                                  color: kPrimary,
-                                ),
-                              );
-                            },
+                            driver.profile,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Center(
+                              child: Icon(
+                                Icons.error,
+                                color: kPrimary,
+                              ),
+                            ),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -99,17 +96,17 @@ class RestaurantTile extends StatelessWidget {
                         height: 5,
                       ),
                       ReusableText(
-                          text: restaurant.title,
+                          text: driver.username,
                           style: appStyle(11, kDark, FontWeight.w400)),
                       ReusableText(
-                          text: "Delivery time: ${restaurant.time}",
+                          text: "${driver.email}",
                           style: appStyle(9, kGray, FontWeight.w400)),
                       // const SizedBox(
                       //   height: 5,
                       // ),
                       SizedBox(
                         width: width * 0.7,
-                        child: Text(restaurant.coords.address,
+                        child: Text(driver.phone,
                             overflow: TextOverflow.ellipsis,
                             style: appStyle(9, kGray, FontWeight.w400)),
                       ),
@@ -119,31 +116,6 @@ class RestaurantTile extends StatelessWidget {
                     ],
                   )
                 ],
-              ),
-            ),
-          ),
-          Positioned(
-            right: 5,
-            top: 6.h,
-            child: Container(
-              width: 60.h,
-              height: 19.h,
-              decoration: BoxDecoration(
-                  color: restaurant.isAvailable == true ||
-                          restaurant.isAvailable == null
-                      ? kPrimary
-                      : kSecondaryLight,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(10),
-                  )),
-              child: Center(
-                child: ReusableText(
-                  text: restaurant.isAvailable == null ||
-                          restaurant.isAvailable == true
-                      ? "OPEN"
-                      : "CLOSED",
-                  style: appStyle(12, kLightWhite, FontWeight.bold),
-                ),
               ),
             ),
           ),

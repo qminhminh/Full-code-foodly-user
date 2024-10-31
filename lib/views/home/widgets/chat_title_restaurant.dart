@@ -11,8 +11,8 @@ import 'package:foodly_user/models/restaurants.dart';
 import 'package:foodly_user/views/home/widgets/chat_restaurant.dart';
 import 'package:get/get.dart';
 
-class ChatTile extends StatelessWidget {
-  const ChatTile({
+class ChatTileRestaurants extends StatelessWidget {
+  const ChatTileRestaurants({
     super.key,
     required this.restaurant,
   });
@@ -68,7 +68,7 @@ class ChatTile extends StatelessWidget {
                             padding: const EdgeInsets.only(left: 6, bottom: 2),
                             color: kGray.withOpacity(0.6),
                             height: 16,
-                            width: width,
+                            width: 70.w,
                             child: RatingBarIndicator(
                               rating: 5,
                               itemBuilder: (context, index) => const Icon(

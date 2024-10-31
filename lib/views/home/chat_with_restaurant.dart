@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:foodly_user/common/app_style.dart';
-import 'package:foodly_user/common/reusable_text.dart';
 import 'package:foodly_user/common/shimmers/foodlist_shimmer.dart';
 import 'package:foodly_user/constants/constants.dart';
 import 'package:foodly_user/hooks/fetchAllNearbyRestaurants.dart';
 import 'package:foodly_user/models/restaurants.dart';
-import 'package:foodly_user/views/home/widgets/chat_title.dart';
+import 'package:foodly_user/views/home/widgets/chat_title_restaurant.dart';
 
 class ChatWithRetaurant extends HookWidget {
   const ChatWithRetaurant({super.key});
@@ -19,21 +17,6 @@ class ChatWithRetaurant extends HookWidget {
     final isLoading = hookResult.isLoading;
 
     return Scaffold(
-      backgroundColor: kLightWhite,
-      appBar: AppBar(
-        elevation: .4,
-        backgroundColor: kLightWhite,
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.grid_view),
-          ),
-        ],
-        title: ReusableText(
-            text: "Chat with Restaurants",
-            style: appStyle(12, kGray, FontWeight.w600)),
-      ),
       body: isLoading
           ? const FoodsListShimmer()
           : Container(
@@ -44,7 +27,7 @@ class ChatWithRetaurant extends HookWidget {
                   itemCount: restaurants.length,
                   itemBuilder: (context, i) {
                     Restaurants restaurant = restaurants[i];
-                    return ChatTile(restaurant: restaurant);
+                    return ChatTileRestaurants(restaurant: restaurant);
                   }),
             ),
     );

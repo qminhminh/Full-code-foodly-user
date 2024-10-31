@@ -8,11 +8,11 @@ import 'package:foodly_user/common/heading.dart';
 import 'package:foodly_user/constants/constants.dart';
 import 'package:foodly_user/controllers/catergory_controller.dart';
 import 'package:foodly_user/views/home/all_nearby_restaurants.dart';
-import 'package:foodly_user/views/home/chat_page.dart';
 import 'package:foodly_user/views/home/fastest_foods_page.dart';
 import 'package:foodly_user/views/home/recommendations.dart';
 import 'package:foodly_user/views/home/widgets/categories_list.dart';
 import 'package:foodly_user/views/home/widgets/category_foodlist.dart';
+import 'package:foodly_user/views/home/widgets/chat_tab.dart';
 import 'package:foodly_user/views/home/widgets/food_list.dart';
 import 'package:foodly_user/views/home/widgets/nearby_restaurants.dart';
 import 'package:get/get.dart';
@@ -89,7 +89,7 @@ class HomePage extends StatelessWidget {
           focusColor: kPrimary,
           hoverColor: kPrimary,
           onPressed: () {
-            Get.to(() => const ChatWithRetaurant());
+            Get.to(() => const ChatTab());
           },
           child: const Icon(Icons.chat_bubble),
           backgroundColor: kPrimary,
