@@ -223,6 +223,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
                     'message': updatedMessage,
                   });
                   setState(() {
+                    _loadChatHistory();
                     messages[index]['message'] = updatedMessage;
                     filteredMessages[index]['message'] =
                         updatedMessage; // Update filteredMessages too
@@ -305,7 +306,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
         ),
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Get.back(result: true);
           },
           icon: const Icon(Icons.arrow_back),
           color: Colors.black,

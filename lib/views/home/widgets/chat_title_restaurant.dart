@@ -1,17 +1,23 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:foodly_user/common/app_style.dart';
 import 'package:foodly_user/common/reusable_text.dart';
 import 'package:foodly_user/constants/constants.dart';
+import 'package:foodly_user/models/environment.dart';
 import 'package:foodly_user/models/restaurants.dart';
 import 'package:foodly_user/views/home/widgets/chat_restaurant.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
 
-class ChatTileRestaurants extends StatelessWidget {
+class ChatTileRestaurants extends HookWidget {
   const ChatTileRestaurants({
     super.key,
     required this.restaurant,
@@ -21,13 +27,56 @@ class ChatTileRestaurants extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final box = GetStorage();
+    late final String uid = box.read("userId").replaceAll('"', '');
+    final messages = useState<List<dynamic>>([]);
+    final isLoading = useState(false);
+    final error = useState<Exception?>(null);
+
+    // Hàm fetch dữ liệu
+    Future<void> fetchData() async {
+      isLoading.value = true;
+      try {
+        final url = Uri.parse(
+            '${Environment.appBaseUrl}/api/chats/messages/${restaurant.id}/$uid');
+        final response = await http.get(url);
+
+        if (response.statusCode == 200) {
+          messages.value = json.decode(response.body);
+        } else {
+          throw Exception('Failed to load messages');
+        }
+      } catch (e) {
+        error.value = e as Exception?;
+      } finally {
+        isLoading.value = false;
+      }
+    }
+
+    // Gọi fetchData khi build lần đầu
+    useEffect(() {
+      fetchData();
+      return null;
+    }, const []);
+
+    // Lấy tin nhắn cuối cùng chưa đọc
+    final lastUnreadMessage = messages.value.isNotEmpty
+        ? messages.value.lastWhere(
+            (msg) => msg['isRead'] == 'unread',
+            orElse: () => null,
+          )
+        : null;
     return GestureDetector(
-      onTap: () {
-        Get.to(
+      onTap: () async {
+        final result = await Get.to(
           () => ChatRestaurant(restaurant: restaurant),
           duration: const Duration(milliseconds: 300),
           transition: Transition.fadeIn,
         );
+
+        if (result == true) {
+          fetchData();
+        }
       },
       child: Stack(
         clipBehavior: Clip.hardEdge,
@@ -97,20 +146,40 @@ class ChatTileRestaurants extends StatelessWidget {
                       ReusableText(
                           text: restaurant.title,
                           style: appStyle(11, kDark, FontWeight.w400)),
-                      ReusableText(
-                          text: "Delivery time: ${restaurant.time}",
-                          style: appStyle(9, kGray, FontWeight.w400)),
-                      // const SizedBox(
-                      //   height: 5,
-                      // ),
-                      SizedBox(
-                        width: width * 0.7,
-                        child: Text(restaurant.coords.address,
-                            overflow: TextOverflow.ellipsis,
-                            style: appStyle(9, kGray, FontWeight.w400)),
-                      ),
                       const SizedBox(
                         height: 5,
+                      ),
+                      Row(
+                        children: [
+                          if (lastUnreadMessage !=
+                              null) // Chỉ hiển thị khi có tin chưa đọc
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  left: 8), // Khoảng cách giữa tin nhắn và nhãn
+                              width: 10,
+                              height: 10,
+                              decoration: const BoxDecoration(
+                                color: Colors.green,
+                                shape: BoxShape
+                                    .circle, // Đặt hình dạng bo tròn hoàn toàn
+                              ),
+                            ),
+                          const SizedBox(
+                            width: 1,
+                          ),
+                          Text(
+                              lastUnreadMessage != null
+                                  ? "${lastUnreadMessage!['message']}"
+                                  : "No new messages",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: appStyle(
+                                  15,
+                                  lastUnreadMessage != null
+                                      ? kGray
+                                      : Colors.black,
+                                  FontWeight.w400)),
+                        ],
                       ),
                     ],
                   )
