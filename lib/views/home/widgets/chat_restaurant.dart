@@ -311,14 +311,6 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
           icon: const Icon(Icons.arrow_back),
           color: Colors.black,
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              // Search function
-            },
-            icon: const Icon(Icons.search),
-          ),
-        ],
       ),
       body: Column(
         children: [

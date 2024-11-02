@@ -308,14 +308,6 @@ class _ChatDriverState extends State<ChatDriver> {
           icon: const Icon(Icons.arrow_back),
           color: Colors.black,
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              // Search function
-            },
-            icon: const Icon(Icons.search),
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -334,26 +326,28 @@ class _ChatDriverState extends State<ChatDriver> {
                         ? MainAxisAlignment.end
                         : MainAxisAlignment.start,
                     children: [
-                      PopupMenuButton<int>(
-                        icon: const Icon(Icons.more_vert),
-                        onSelected: (value) {
-                          if (value == 1) {
-                            _editMessage(index);
-                          } else if (value == 2) {
-                            _deleteMessage(index);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          const PopupMenuItem(
-                            value: 1,
-                            child: Text("Edit"),
-                          ),
-                          const PopupMenuItem(
-                            value: 2,
-                            child: Text("Delete"),
-                          ),
-                        ],
-                      ),
+                      isCustomer
+                          ? PopupMenuButton<int>(
+                              icon: const Icon(Icons.more_vert),
+                              onSelected: (value) {
+                                if (value == 1) {
+                                  _editMessage(index);
+                                } else if (value == 2) {
+                                  _deleteMessage(index);
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  value: 1,
+                                  child: Text("Edit"),
+                                ),
+                                const PopupMenuItem(
+                                  value: 2,
+                                  child: Text("Delete"),
+                                ),
+                              ],
+                            )
+                          : const SizedBox(),
                       Container(
                         margin: const EdgeInsets.symmetric(
                             vertical: 4.0, horizontal: 8.0),
