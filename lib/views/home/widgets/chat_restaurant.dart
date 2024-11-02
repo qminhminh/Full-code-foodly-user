@@ -28,7 +28,38 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
     super.initState();
     uid = box.read("userId");
     _connectToServer();
-    _loadChatHistory();
+    _loadChatHistory().then((_) {
+      _markMessagesAsRead();
+    });
+  }
+
+  void _markMessagesAsRead() {
+    // Lọc ra những tin nhắn có sender khác với uid của người dùng
+    final unreadMessages = messages
+        .where((msg) =>
+            msg['sender'] != uid.replaceAll('"', '') &&
+            msg['isRead'] == 'unread')
+        .toList();
+
+    if (unreadMessages.isNotEmpty) {
+      socket.emit('mark_as_read_client_res', {
+        'restaurantId': widget.restaurant.id,
+        'customerId': uid.replaceAll('"', ''),
+      });
+
+      setState(() {
+        for (var msg in unreadMessages) {
+          msg['isRead'] =
+              'read'; // Cập nhật các tin nhắn đủ điều kiện là đã đọc
+        }
+        for (var msg in filteredMessages) {
+          if (msg['sender'] != uid.replaceAll('"', '') &&
+              msg['isRead'] == 'unread') {
+            msg['isRead'] = 'read';
+          }
+        }
+      });
+    }
   }
 
   void _connectToServer() {
@@ -64,6 +95,9 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
           'isRead': data['isRead'] ?? 'unread',
         });
       });
+
+      _markMessagesAsRead();
+      // _loadChatHistory();
     });
 
     socket.on('message_deleted', (data) {
@@ -71,7 +105,25 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
         messages.removeWhere((msg) => msg['_id'] == data['messageId']);
         filteredMessages.removeWhere((msg) => msg['_id'] == data['messageId']);
       });
-      Get.snackbar("Success", "Message deleted successfully");
+      _loadChatHistory();
+      //Get.snackbar("Success", "Message deleted successfully");
+    });
+
+    socket.on('messages_marked_as_read', (data) {
+      setState(() {
+        for (var msg in messages) {
+          if (msg['sender'] != uid.replaceAll('"', '') &&
+              msg['isRead'] == 'unread') {
+            msg['isRead'] = 'read';
+          }
+        }
+        for (var msg in filteredMessages) {
+          if (msg['sender'] != uid.replaceAll('"', '') &&
+              msg['isRead'] == 'unread') {
+            msg['isRead'] = 'read';
+          }
+        }
+      });
     });
   }
 
@@ -92,6 +144,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
               'message': msg['message'],
               'sender': msg['sender'],
               'id': msg['_id'] ?? '',
+              'isRead': msg['isRead'] ?? 'unread',
             };
           }).toList();
           filteredMessages = List.from(messages);
@@ -126,6 +179,7 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
         });
         _messageController.clear();
       });
+      _loadChatHistory();
     }
   }
 
@@ -307,6 +361,36 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
                               softWrap: true,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
+                            ),
+                            // Thêm widget trạng thái đọc ở đây
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // Kiểm tra xem tin nhắn đã đọc hay chưa
+                                Icon(
+                                  message['isRead'] == 'read'
+                                      ? Icons.check
+                                      : Icons.check_box_outline_blank,
+                                  size: 16.0,
+                                  color: message['isRead'] == 'read'
+                                      ? Colors.green
+                                      : Colors.grey,
+                                ),
+                                const SizedBox(
+                                    width:
+                                        4.0), // Khoảng cách giữa icon và text
+                                Text(
+                                  message['isRead'] == 'read'
+                                      ? 'read'
+                                      : 'unread',
+                                  style: TextStyle(
+                                    color: message['isRead'] == 'read'
+                                        ? Colors.green
+                                        : Colors.grey,
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
