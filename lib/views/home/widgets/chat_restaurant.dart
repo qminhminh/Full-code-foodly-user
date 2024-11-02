@@ -33,6 +33,14 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
     });
   }
 
+  void _sendUnreadNotification(Map<String, dynamic> data) {
+    socket.emit('send_unread_notification_client_to_res', {
+      'customerId': uid.replaceAll('"', ''),
+      'restaurantId': widget.restaurant.id,
+      'message': data['message'],
+    });
+  }
+
   void _markMessagesAsRead() {
     // Lọc ra những tin nhắn có sender khác với uid của người dùng
     final unreadMessages = messages
@@ -95,9 +103,11 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
           'isRead': data['isRead'] ?? 'unread',
         });
       });
-
+      if (data['isRead'] == 'unread') {
+        _sendUnreadNotification(data);
+      }
       _markMessagesAsRead();
-      // _loadChatHistory();
+      //_loadChatHistory();
     });
 
     socket.on('message_deleted', (data) {
@@ -111,16 +121,20 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
 
     socket.on('messages_marked_as_read', (data) {
       setState(() {
-        for (var msg in messages) {
-          if (msg['sender'] != uid.replaceAll('"', '') &&
-              msg['isRead'] == 'unread') {
-            msg['isRead'] = 'read';
+        // Cập nhật trạng thái của các tin nhắn trong messages
+        for (var messageId in data['messageIds']) {
+          final index = messages.indexWhere((msg) => msg['id'] == messageId);
+          if (index != -1) {
+            messages[index]['isRead'] = 'read';
           }
         }
-        for (var msg in filteredMessages) {
-          if (msg['sender'] != uid.replaceAll('"', '') &&
-              msg['isRead'] == 'unread') {
-            msg['isRead'] = 'read';
+
+        // Cập nhật trạng thái của các tin nhắn trong filteredMessages
+        for (var messageId in data['messageIds']) {
+          final index =
+              filteredMessages.indexWhere((msg) => msg['id'] == messageId);
+          if (index != -1) {
+            filteredMessages[index]['isRead'] = 'read';
           }
         }
       });
@@ -363,35 +377,37 @@ class _ChatRestaurantState extends State<ChatRestaurant> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             // Thêm widget trạng thái đọc ở đây
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                // Kiểm tra xem tin nhắn đã đọc hay chưa
-                                Icon(
-                                  message['isRead'] == 'read'
-                                      ? Icons.check
-                                      : Icons.check_box_outline_blank,
-                                  size: 16.0,
-                                  color: message['isRead'] == 'read'
-                                      ? Colors.green
-                                      : Colors.grey,
-                                ),
-                                const SizedBox(
-                                    width:
-                                        4.0), // Khoảng cách giữa icon và text
-                                Text(
-                                  message['isRead'] == 'read'
-                                      ? 'read'
-                                      : 'unread',
-                                  style: TextStyle(
-                                    color: message['isRead'] == 'read'
-                                        ? Colors.green
-                                        : Colors.grey,
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            isCustomer
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      // Kiểm tra xem tin nhắn đã đọc hay chưa
+                                      Icon(
+                                        message['isRead'] == 'read'
+                                            ? Icons.check
+                                            : Icons.check_box_outline_blank,
+                                        size: 16.0,
+                                        color: message['isRead'] == 'read'
+                                            ? Colors.green
+                                            : Colors.grey,
+                                      ),
+                                      const SizedBox(
+                                          width:
+                                              4.0), // Khoảng cách giữa icon và text
+                                      Text(
+                                        message['isRead'] == 'read'
+                                            ? 'read'
+                                            : 'unread',
+                                        style: TextStyle(
+                                          color: message['isRead'] == 'read'
+                                              ? Colors.green
+                                              : Colors.grey,
+                                          fontSize: 12.0,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : const SizedBox(),
                           ],
                         ),
                       ),
