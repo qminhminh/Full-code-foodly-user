@@ -14,6 +14,7 @@ import 'package:foodly_user/models/login_response.dart';
 import 'package:foodly_user/views/auth/widgets/login_redirect.dart';
 import 'package:foodly_user/views/orders/client_orders.dart';
 import 'package:foodly_user/views/profile/address.dart';
+import 'package:foodly_user/views/profile/edit_profile.dart';
 import 'package:foodly_user/views/profile/widgets/profile_appbar.dart';
 import 'package:foodly_user/views/profile/widgets/tile_widget.dart';
 import 'package:foodly_user/views/reviews/rating_review_page.dart';
@@ -95,12 +96,20 @@ class ProfilePage extends HookWidget {
                                     ),
                                   ],
                                 ),
-                                // GestureDetector(
-                                //     onTap: () {},
-                                //     child: Padding(
-                                //       padding: EdgeInsets.only(top: 12.0.h),
-                                //       child: const Icon(Feather.edit, size: 18),
-                                //     ))
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(
+                                        () => EditProfile(
+                                              user: user!,
+                                            ),
+                                        transition: Transition.fade,
+                                        duration: const Duration(seconds: 2));
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 12.0.h),
+                                    child: const Icon(Feather.edit, size: 18),
+                                  ),
+                                )
                               ],
                             ),
                           ),
