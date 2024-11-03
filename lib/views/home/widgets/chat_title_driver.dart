@@ -59,7 +59,7 @@ class ChatTileDriver extends HookWidget {
 
     final lastUnreadMessage = messages.value.isNotEmpty
         ? messages.value.lastWhere(
-            (msg) => msg['isRead'] == 'unread',
+            (msg) => msg['isRead'] == 'unread' && msg['sender'] != uid,
             orElse: () => null,
           )
         : null;

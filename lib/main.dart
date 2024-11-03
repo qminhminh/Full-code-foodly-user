@@ -31,12 +31,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
-  ]);
+
   await dotenv.load(fileName: Environment.fileName);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -71,7 +66,7 @@ class MyApp extends StatelessWidget {
         builder: (context, child) {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Foodly Delivery App',
+            title: 'Foodly App',
             theme: ThemeData(
               scaffoldBackgroundColor: Color(kOffWhite.value),
               iconTheme: IconThemeData(color: Color(kDark.value)),

@@ -88,7 +88,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final categoryController = Get.put(CategoryController());
     final countUnreadMessage = messages.isNotEmpty
-        ? messages.where((msg) => msg['isRead'] == 'unread').toList()
+        ? messages
+            .where((msg) => msg['isRead'] == 'unread' && msg['sender'] != uid)
+            .toList()
         : [];
     return Scaffold(
       backgroundColor: kOffWhite,
