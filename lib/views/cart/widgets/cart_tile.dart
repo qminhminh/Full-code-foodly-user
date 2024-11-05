@@ -120,7 +120,7 @@ class CartTile extends HookWidget {
                                 updateTotalPrice(); // Update total price when selection changes
                               },
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: 1),
                             ClipRRect(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(12)),
@@ -135,7 +135,7 @@ class CartTile extends HookWidget {
                         ),
                         // Product Image
 
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 5),
                         // Product Info
                         Expanded(
                           child: Column(
@@ -144,7 +144,7 @@ class CartTile extends HookWidget {
                               ReusableText(
                                 text: product.productId.title,
                                 style: appStyle(
-                                  15.sp,
+                                  13.sp,
                                   Colors.black,
                                   FontWeight.bold,
                                 ),
@@ -189,7 +189,7 @@ class CartTile extends HookWidget {
                                     () => Text(
                                       "\$${(product.productId.price * counterController.getCount(product.productId.id)).toStringAsFixed(2)}",
                                       style: appStyle(
-                                          16.sp, Colors.black, FontWeight.bold),
+                                          13.sp, Colors.black, FontWeight.bold),
                                     ),
                                   ),
                                   SizedBox(
@@ -232,7 +232,7 @@ class CartTile extends HookWidget {
                                         text:
                                             "${counterController.getCount(product.productId.id)}",
                                         style: appStyle(
-                                            16, kDark, FontWeight.w500),
+                                            13, kDark, FontWeight.w500),
                                       ),
                                     ),
                                   ),
@@ -294,15 +294,15 @@ class CartTile extends HookWidget {
                   children: [
                     SvgPicture.asset(
                       'assets/icons/vouvher.svg',
-                      width: 40.w,
-                      height: 40.h,
+                      width: 35.w,
+                      height: 35.h,
                     ),
                     const SizedBox(width: 15),
                     Text(
                       cartController.selectedVoucher.value != null
                           ? "Voucher:${cartController.selectedVoucher.value!.title} - ${cartController.selectedVoucher.value!.discount}% >"
                           : "Apply Voucher >",
-                      style: appStyle(16.sp, Colors.black, FontWeight.w500),
+                      style: appStyle(13.sp, Colors.black, FontWeight.w500),
                     ),
                   ],
                 ),

@@ -143,7 +143,7 @@ class ChatTileDriver extends HookWidget {
                       ),
                       ReusableText(
                           text: driver.username,
-                          style: appStyle(11, kDark, FontWeight.w400)),
+                          style: appStyle(14, kDark, FontWeight.w400)),
                       const SizedBox(
                         height: 5,
                       ),
@@ -166,17 +166,19 @@ class ChatTileDriver extends HookWidget {
                             width: 1,
                           ),
                           Text(
+                            lastUnreadMessage != null
+                                ? "${lastUnreadMessage!['message']}"
+                                : "No new messages",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: appStyle(
+                              13,
                               lastUnreadMessage != null
-                                  ? "${lastUnreadMessage!['message']}"
-                                  : "No new messages",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: appStyle(
-                                  15,
-                                  lastUnreadMessage != null
-                                      ? kGray
-                                      : Colors.black,
-                                  FontWeight.w400)),
+                                  ? Colors.grey
+                                  : Colors.black,
+                              FontWeight.w400,
+                            ),
+                          ),
                         ],
                       ),
                     ],

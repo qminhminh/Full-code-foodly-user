@@ -16,7 +16,6 @@ import 'package:foodly_user/views/entrypoint.dart';
 import 'package:foodly_user/views/orders/order_details_page.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:flutter/services.dart';
 
 Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
   print(
