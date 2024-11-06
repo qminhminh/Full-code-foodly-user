@@ -1,6 +1,7 @@
 // ignore_for_file: library_prefixes
 
 import 'package:flutter/material.dart';
+import 'package:foodly_user/constants/constants.dart';
 import 'package:foodly_user/models/environment.dart';
 import 'package:foodly_user/models/user_driver.dart';
 import 'package:get/get.dart';
@@ -298,7 +299,7 @@ class _ChatDriverState extends State<ChatDriver> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: kPrimary,
         title: Text(
           widget.driver.username,
           style: const TextStyle(color: Colors.black),
